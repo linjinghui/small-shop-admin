@@ -159,6 +159,10 @@
     --theme: #0079ff;
   }
   
+  .button {
+    border-radius: 2px;
+  }
+
   /* 笔记本尺寸 1366 * 768 */
   @media screen and (max-width: 1366px) {}
 </style>
