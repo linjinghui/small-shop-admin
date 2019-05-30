@@ -1,6 +1,6 @@
 <template>
-  <div class="wrap page-h5-app">
-    我是H5应用页面
+  <div class="page product">
+    产品页面
   </div>
 </template>
 
@@ -8,27 +8,26 @@
   // import {Button} from 'web-base-ui';
   
   export default {
-    name: 'H5App',
+    name: 'Product',
     components: {
       // cmpButton: Button
     },
     data () {
-      return {
-        // 
-      };
+      return {};
     },
-    mounted: function () {
+    watch: {},
+    mounted () {
       // 
     },
-    methods: {
-      xxx: function () {
-        // 
-      }
-    }
+    methods: {}
   };
 </script>
 
 <style lang="scss"></style>
 <style scoped lang="scss">
-  .H5App {}
+  @import '~@/style/theme.scss';
+
+  .page {
+    height: 100%;
+  }
 </style>

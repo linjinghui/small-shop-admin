@@ -26,7 +26,8 @@ module.exports = {
     extensions: ['.js', '.vue', '.css', '.json'],
     alias: {
       '~root': path.join(__dirname, '../src'),
-      '~packages': path.join(__dirname, '../packages')
+      '~packages': path.join(__dirname, '../packages'),
+      '@': path.join(__dirname, '../src')
     }
   },
   performance: {},

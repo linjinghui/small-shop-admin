@@ -119,16 +119,8 @@
               path = '/#/index';
               break;
             case 2:
-              // 混合应用页
-              path = '/#/mixapp';
-              break;
-            case 3:
-              // H5应用页
-              path = '/#/h5app';
-              break;
-            case 4:
-              // H5应用页
-              path = '/#/devtool';
+              // 产品库管理
+              path = '/#/product';
               break;
             default:
               path = '/#/index';
@@ -158,13 +150,28 @@
     background-color: #fff;
     --theme: #0079ff;
   }
+
+  /* 笔记本尺寸 1366 * 768 */
+  @media screen and (max-width: 1366px) {}
+</style>
+
+<style type="text/css" lang="scss" class="webBaseui">
+  @import '~@/style/theme.scss';
   
   .button {
     border-radius: 2px;
   }
 
-  /* 笔记本尺寸 1366 * 768 */
-  @media screen and (max-width: 1366px) {}
+  .input > input {
+    border-color: #f4f6f8!important;
+    border-top: 0!important;
+    border-left: 0!important;
+    border-right: 0!important;
+  }
+
+  .input > input:not([readonly]):focus {
+    border-color: $theme!important;
+  }
 </style>
 
 <style lang="scss" class="cssForm">

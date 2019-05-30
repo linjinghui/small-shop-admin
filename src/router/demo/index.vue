@@ -1,6 +1,6 @@
 <template>
-  <div class="wrap page-mixapp">
-    我是混合应用页面
+  <div class="page index">
+    啊三大送达撒的
   </div>
 </template>
 
@@ -8,27 +8,26 @@
   // import {Button} from 'web-base-ui';
   
   export default {
-    name: 'Mixapp',
+    name: 'Index',
     components: {
       // cmpButton: Button
     },
     data () {
-      return {
-        // 
-      };
+      return {};
     },
-    mounted: function () {
+    watch: {},
+    mounted () {
       // 
     },
-    methods: {
-      xxx: function () {
-        // 
-      }
-    }
+    methods: {}
   };
 </script>
 
 <style lang="scss"></style>
 <style scoped lang="scss">
-  .mixapp {}
+  @import '~@/style/theme.scss';
+
+  .page {
+    height: 100%;
+  }
 </style>

@@ -1,27 +1,32 @@
 <template>
   <div class="page login">
     <div class="main center-hv" @click="showHelp=false">
-      <div class="left wrap-form">
-        <div class="form-layer nav" :style="'border-color:'+borderColor">
+      <div class="left">
+        <!-- 导航 -->
+        <div class="nav" >
           <span v-for="(info,index) in nav.data" :key="'ln-'+index" :class="{'active':nav.active===index}" :style="{'border-color':nav.active===index&&theme}">{{info}}</span>
         </div>
-        <div class="form-layer" :style="'border-color:'+borderColor">
-          <cmp-input v-model="account" maxlength="50" placeholder="请输入帐号" autofocus="true" clear="true">
-            <i class="cicon-tick center-v" slot="left" style="background-color: green;"></i>
-          </cmp-input>
+        <!-- 登录表单 -->
+        <div class="login wrap-form">
+          <div class="form-layer">
+            <cmp-input v-model="account" maxlength="30" placeholder="请输入帐号" autofocus="true">
+              <i class="iconfont iconzhanghao center-v" slot="left"></i>
+            </cmp-input>
+          </div>
+          <div class="form-layer">
+            <cmp-input v-model="pwd" maxlength="50" type="password" placeholder="请输入密码">
+              <i class="iconfont iconwebicon204 center-v" slot="left"></i>
+            </cmp-input>
+          </div>
+          <div class="form-layer vcode">
+            <cmp-input v-model="vcode" maxlength="6" placeholder="请输入验证码">
+              <i class="iconfont iconyanzhengma center-v" slot="left"></i>
+            </cmp-input>
+            <img class="center-hv" src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1559131287523&di=2a7f8363295c8d25e950b51fcfde93d9&imgtype=0&src=http%3A%2F%2Fwww.xiaobaixitong.com%2Fd%2Ffile%2Fhelp%2F2018-08-06%2Ff15ce5d652d8da38e9e0e384f35b39d7.png">
+          </div>
+          
+          <cmp-button :theme="theme" @click="login">立即登录</cmp-button>
         </div>
-        <div class="form-layer" :style="'border-color:'+borderColor">
-          <cmp-input v-model="pwd" maxlength="100" type="password" placeholder="请输入密码" clear="true">
-            <i class="cicon-tick center-v" slot="left" style="background-color: green;"></i>
-          </cmp-input>
-        </div>
-        <div class="form-layer vcode" :style="'border-color:'+borderColor">
-          <cmp-input v-model="vcode" maxlength="6" placeholder="请输入验证码" clear="true">
-            <i class="cicon-tick center-v" slot="left" style="background-color: green;"></i>
-          </cmp-input>
-          <img class="center-hv" src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1559131287523&di=2a7f8363295c8d25e950b51fcfde93d9&imgtype=0&src=http%3A%2F%2Fwww.xiaobaixitong.com%2Fd%2Ffile%2Fhelp%2F2018-08-06%2Ff15ce5d652d8da38e9e0e384f35b39d7.png">
-        </div>
-        <cmp-button :theme="theme" @click="clk">立即登录</cmp-button>
       </div>
       <div class="right center-hv" v-if="showHelp" @click.stop>
         <p :style="'border-bottom:solid 1px '+borderColor">微信扫码添加</p>
@@ -52,7 +57,12 @@
         showHelp: false,
         account: '',
         pwd: '',
-        vcode: ''
+        vcode: '',
+        optionBreadcrumbs: {
+          list: [
+            {name: 'nav1', disabled: true}, {name: 'nav2'}, {name: 'nav3', disabled: true}, {name: 'nav4'}
+          ]
+        }
       };
     },
     computed: {
@@ -145,8 +155,9 @@
 
 <style lang="scss">
   .login {
-    input {
-      border: 0!important;
+    .input > .iconfont {
+      font-size: 20px !important;;
+      background-color: transparen !important;
     }
     .vcode .cicon-cross-crle-chr-cpt {
       right: inherit!important;
@@ -155,9 +166,18 @@
   }
 </style>
 <style scoped lang="scss">
+  @import '~@/style/theme.scss';
+
+  .iconfont {
+    color: inherit!important;
+    background-color: transparent!important;
+  }
+
   .page {
     height: 100%;
     background: radial-gradient(rgba(57, 93, 255, 0.2), #fff);
+
+    
 
     > .main {
       width: 600px;
@@ -170,24 +190,31 @@
         position: relative;
         float: left;
         margin-top: 26px;
-        padding: 30px 20px;
+        padding: 20px;
         width: calc(100% - 285px);
         height: calc(100% - 26px);
         background-color: #fff;
 
-        > .form-layer {
+        > .nav {
+          margin-bottom: 20px;
+          border-bottom: solid 1px #f4f6f8;
+          > span {
+            display: inline-block;
+            padding: 5px 8px;
+            cursor: pointer;
+          }
+          > span.active {
+            font-weight: bold;
+            border-bottom: solid 2px $theme;
+          }
+        }
+
+        .form-layer {
           position: relative;
           margin-top: 10px;
-          border-style: solid;
-          border-width: 0px;
-          border-bottom-width: 1px;
         }
 
-        > .form-layer.nav {
-          margin-bottom: 20px;
-        }
-
-        > .form-layer.vcode {
+        .form-layer.vcode {
           > img {
             left: inherit;
             width: 100px;
@@ -196,20 +223,10 @@
           }
         }
 
-        > .nav {
-          > span {
-            display: inline-block;
-            padding: 5px 8px;
-            cursor: pointer;
-          }
-          > span.active {
-            font-weight: bold;
-            border-bottom: solid 2px;
-          }
-        }
-
-        > .button {
+        .button {
           margin-top: 20px;
+          width: 100%;
+          background: $theme;
         }
       }
 
@@ -223,6 +240,7 @@
         > p {
           padding: 14px 10px;
           font-size: 16px;
+          border: solid 1px #f4f6f8;
         }
 
         > img {

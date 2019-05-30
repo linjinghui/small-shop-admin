@@ -3,9 +3,7 @@ import Router from 'vue-router';
 
 const Login = () => import('./login/index.vue');
 const Index = () => import('./index/index.vue');
-const Mixapp = () => import('./mixapp/index.vue');
-const H5app = () => import('./h5app/index.vue');
-const Devtool = () => import('./devtool/index.vue');
+const Product = () => import('./product/index.vue');
 
 Vue.use(Router);
 
@@ -23,24 +21,10 @@ export default new Router({
       component: Index,
       children: [
         {
-          path: '/',
-          name: 'mixapp',
-          component: Mixapp
-        },
-        {
-          path: '/mixapp',
-          name: 'mixapp',
-          component: Mixapp
-        },
-        {
-          path: '/h5app',
-          name: 'h5app',
-          component: H5app
-        },
-        {
-          path: '/devtool',
-          name: 'devtool',
-          component: Devtool
+          path: '/product',
+          name: 'product',
+          component: Product,
+          children: []
         }
       ]
     }
