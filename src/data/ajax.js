@@ -4,26 +4,28 @@ import {$http, $tip} from './constant.js';
 const URL = '/api';
 // ===================================================[DEMO]===================================================
 /**
- * demo-get
- * @param {string} pms.name - 名字 
+ * 获取商品列表
+ * @param {string} pms.name - 商品名称
  * @param {function} callback - 回调函数 
  */
-export function ajaxGet (pms, callback) {
+export function ajaxGetGoods (pms, callback, fail) {
   let params = {
-    name: pms.name
-  };
+    name: pms.name || '',
+		page: pms.page || 1,
+		size: pms.size || 10
+	};
   
-  console.log(params);
-
-  $tip({ show: true, text: '请输入栏目名称', theme: 'warning' });
   $http({
     method: 'GET',
-    url: URL + '/portal/widget',
+    url: URL + '/admin/goods',
     params: params
   }).then(function (successData) {
-    callback && callback(successData.body);
-    if (successData.body.msgCode !== 200) {
-      $tip({ show: true, text: successData.body.msgDesc, theme: 'danger' });
+    if (successData.body.code === 200) {
+      callback && callback(successData.body);
+    } else if (fail) {
+      fail(data);
+    } else {
+      $tip({ show: true, text: successData.body.msg, theme: 'danger' });
     }
   });
 }

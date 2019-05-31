@@ -4,7 +4,7 @@ import store from './store';
 import router from './router';
 import App from './App';
 import {Loading, Tip, Confirm, Prompt} from 'web-base-ui';
-// import './mock.js';
+import './mock.js';
 
 // 注册全局组件
 [Loading, Tip, Confirm, Prompt].map(function (component) {

@@ -120,7 +120,7 @@
               break;
             case 2:
               // 产品库管理
-              path = '/#/product';
+              path = '/#/index/product';
               break;
             default:
               path = '/#/index';
@@ -160,13 +160,14 @@
   
   .button {
     border-radius: 2px;
+    background-color: $theme;
   }
 
   .input > input {
     border-color: #f4f6f8!important;
-    border-top: 0!important;
-    border-left: 0!important;
-    border-right: 0!important;
+    border-top-width: 0!important;
+    border-left-width: 0!important;
+    border-right-width: 0!important;
   }
 
   .input > input:not([readonly]):focus {

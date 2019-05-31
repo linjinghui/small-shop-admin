@@ -9,7 +9,7 @@ const TIMEOUT = 15000;
 const ERRORSERVICE = '服务异常，请稍后再试！';
 
 $http.interceptors.push(function (request, next) {
-//   let token = lsgGetData(LSTUSERKEY) ? lsgGetData(LSTUSERKEY).token : '';
+  let token = '';
   // 设置超时
   let timeout = setTimeout(function () {
     request.abort();
