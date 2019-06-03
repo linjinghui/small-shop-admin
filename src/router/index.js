@@ -16,12 +16,12 @@ export default new Router({
       component: Login
     }, 
     {
-      path: '/index',
+      path: '/home',
       name: 'index',
       component: Index,
       children: [
         {
-          path: '/index/product',
+          path: '/home/product',
           name: 'product',
           component: Product,
           children: []

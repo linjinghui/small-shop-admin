@@ -116,14 +116,14 @@
               break;
             case 1:
               // 首页
-              path = '/#/index';
+              path = '/#/home';
               break;
             case 2:
               // 产品库管理
-              path = '/#/index/product';
+              path = '/#/home/product';
               break;
             default:
-              path = '/#/index';
+              path = '/#/home';
           }
         }
         var search = location.href.split('?');

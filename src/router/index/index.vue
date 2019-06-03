@@ -1,7 +1,7 @@
 <template>
   <div class="page index">
     <header>
-      <cmp-input v-model="account" maxlength="50" placeholder="输入内容，按enter键进行搜索" class="search center-hv">
+      <cmp-input v-model="search" maxlength="100" placeholder="输入内容，按enter键进行搜索" class="search center-hv" @enter="clkSearch">
         <i class="cicon-search-cpt-chr center-v" slot="left"></i>
       </cmp-input>
       <div class="right">
@@ -36,6 +36,7 @@
     },
     data () {
       return {
+        search: '',
         nav: {
           index: '',
           data: [
@@ -55,6 +56,9 @@
       clkNav (index) {
         this.$set(this.nav, 'index', index);
         this.$root.toPage('', this.nav.data[index].urlType);
+      },
+      clkSearch () {
+        window.EVENTBUS.$emit('search', this.search);
       }
     }
   };
