@@ -32,7 +32,7 @@ Mock.mock(/(\/admin\/goods\/info)/, {
     'label|0-3': [
       { 
         'text|1': ['折扣', '清仓', '极鲜'], 
-        'bcolor|1': ['#bf2058', '#ced642', '#fbb519'], 
+        'bgcolor|1': ['#bf2058', '#ced642', '#fbb519'], 
         'color': '#000'
       }
     ],

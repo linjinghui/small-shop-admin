@@ -133,7 +133,7 @@
         } else {
           search = '?' + search[1];
         }
-        window.location.href = location.origin + path + search;
+        window.location.href = location.href.split('/#/')[0] + path + search;
       }
     }
   };

@@ -12,21 +12,7 @@
         <a :class="{'active':active===0}" @click="active=0">基本信息</a>
         <a :class="{'active':active===1}" @click="active=1">预览</a>
       </nav>
-      <div class="wrap-form" v-show="active===0">
-        <!-- 
-    // 广告图片
-    'covers|1-2': ['https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/shuijiao.jpg', 'https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/muwu.jpg', 'https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/cbd.jpg'],
-    
-   
-    // 标签
-    'label|0-3': [
-      { 
-        'text|1': ['折扣', '清仓', '极鲜'], 
-        'bcolor|1': ['#bf2058', '#ced642', '#fbb519'], 
-        'color': '#000'
-      }
-    ],
-    -->
+      <div class="wrap-form" v-if="active===0">
         <div class="form-layer">
           <label class="star">轮播图:</label>
           <span class="f-dom">
@@ -36,15 +22,15 @@
         </div>
         <div class="form-layer">
           <label class="star">产品名称:</label>
-          <cmp-input class="f-dom" maxlength="50" placeholder="请输入产品名称" v-model="dataInfo.name"></cmp-input>
+          <cmp-input class="f-dom" maxlength="20" placeholder="请输入产品名称" v-model="dataInfo.name"></cmp-input>
         </div>
         <div class="form-layer">
           <label class="star">产品描述:</label>
-          <cmp-input class="f-dom" maxlength="100" placeholder="请输入产品描述" v-model="dataInfo.desc"></cmp-input>
+          <cmp-input class="f-dom" maxlength="50" placeholder="请输入产品描述" v-model="dataInfo.desc"></cmp-input>
         </div>
         <div class="form-layer">
           <label class="star">产品单位:</label>
-          <cmp-input class="f-dom" maxlength="100" placeholder="请输入购买单位，如：1kg-1.5kg/份" v-model="dataInfo.unit"></cmp-input>
+          <cmp-input class="f-dom" maxlength="20" placeholder="请输入购买单位，如：1kg-1.5kg/份" v-model="dataInfo.unit"></cmp-input>
         </div>
         <div class="form-layer">
           <label class="star">产品单价:</label>
@@ -67,11 +53,35 @@
           <cmp-input class="f-dom" maxlength="10" placeholder="请输入产品源产地" v-model="dataInfo.pplace"></cmp-input>
         </div>
         <div class="form-layer">
+          <label class="star">标签:</label>
+          <span class="f-dom">
+            <cmp-add-label v-model="dataInfo.label" lablength="3" maxlength="4" btnName="添加" :hisrecord="allLables"></cmp-add-label>
+          </span>
+        </div>
+        <div class="form-layer">
           <label class="star">产品详情:</label>
           <span class="f-dom">
             <img v-for="(url,index) in dataInfo.dtlpics" :key="'cpxq-'+index" :src="url" @click="clkDelDtlpics(url,index)">
             <cmp-button theme="line" v-if="dataInfo.dtlpics&&dataInfo.dtlpics.length<config.lenDetailImg" :fileoption="fileOption" @cbk_file="cbkDtlpics">+</cmp-button>
           </span>
+        </div>
+      </div>
+      <div class="wrap-preview" v-else>
+        <div class="banner">
+          <cmp-banner :nav="dataInfo.covers" navType="point" direction="hor">
+            <img slot="page" class="page" v-for="(url,index) in dataInfo.covers" :key="'pv-lbt-'+index" :src="url">
+          </cmp-banner>
+        </div>
+        <p class="name">{{dataInfo.name}}</p>
+        <p class="desc">{{dataInfo.desc}}</p>
+        <p class="wrap-price">
+          <span class="rprice">￥{{dataInfo.rprice}}</span>
+          <span class="price">￥{{dataInfo.price}}</span>
+        </p>
+        <div class="other"></div>
+        <div class="wrap-detail">
+          <header>商品详情</header>
+          <img v-for="(url,index) in dataInfo.dtlpics" :key="'pv-cpxq-'+index" :src="url">
         </div>
       </div>
     </template>
@@ -83,7 +93,7 @@
 </template>
 
 <script>
-  import {Button, Input, Sidebar} from 'web-base-ui';
+  import {Button, Input, Sidebar, Addlabel, Banner} from 'web-base-ui';
   import {mapState} from 'vuex';
   import {ajaxUploadImg, ajaxDelImg} from '~root/data/ajax.js';
   
@@ -92,7 +102,9 @@
     components: {
       'cmpButton': Button,
       'cmpInput': Input,
-      'cmpSidebar': Sidebar
+      'cmpSidebar': Sidebar,
+      'cmpAddLabel': Addlabel,
+      'cmpBanner': Banner
     },
     props: {
       value: {
@@ -112,7 +124,9 @@
         dataInfo: this.data,
         fileOption: {
           accept: 'image/png, image/jpeg'
-        }
+        },
+        allLables: [{text: 'name-1', bgcolor: 'green'}, {text: 'name-2', bgcolor: 'purple'}, {text: 'name-3', bgcolor: 'blue'}],
+        arr: [{text: 'name-1', bgcolor: 'green'}]
       };
     },
     computed: {
@@ -354,26 +368,94 @@
             color: #888;
           }
 
-          input {
-            padding-left: 0;
+          > .f-dom {
+
+            > input {
+              padding-left: 0;
+            }
+
+            > img, > .button {
+              display: inline-block;
+              margin-right: 5px;
+              margin-bottom: 5px;
+              padding: 0!important;
+              width: 80px;
+              height: 80px;
+              line-height: 80px!important;
+              vertical-align: top;
+              font-size: 40px;
+              color: #ddd!important;
+            }
           }
 
-          img, .button {
-            display: inline-block;
-            margin-right: 5px;
-            margin-bottom: 5px;
-            padding: 0!important;
-            width: 80px;
-            height: 80px;
-            line-height: 80px!important;
-            vertical-align: top;
-            font-size: 40px;
-            color: #ddd!important;
-          }
+          
+
+          
         }
       }
+
+      > .wrap-preview {
+        text-align: center;
+
+        > .banner {
+          margin-bottom: 5px;
+          height: 300px;
+          background-color: red;
+        }
+
+        > .name,
+        > .desc,
+        > .wrap-price {
+          padding: 0 10px;
+          line-height: 26px;
+        }
+
+        > .name {
+          font-size: 18px;
+        }
+
+        > .wrap-price {
+          > .rprice {
+            font-size: 18px;
+            color: #ff9000;
+          }
+
+          > .price {
+            text-decoration: line-through;
+          }
+        }
+
+        > .wrap-detail {
+          > header {
+            position: relative;
+            margin-bottom: 2px;
+            padding: 10px 0;
+            color: $theme;
+            border-bottom: solid 1px #f4f6f8;
+          }
+          > header:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            margin: auto;
+            width: 100px;
+            height: 2px;
+            background-color: $theme;
+          }
+
+          > img {
+            display: block;
+            margin-bottom: 5px;
+            width: 100%;
+          }
+        }
+
+      }
     }
-    .button {
+
+    > footer .button {
       margin-right: 10px;
       padding: 0 15px!important;
       height: 32px;
