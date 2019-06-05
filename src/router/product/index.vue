@@ -19,7 +19,7 @@
           <td>{{props.item.unit}}</td>
           <td>{{props.item.price}}</td>
           <td>{{props.item.rebate}}</td>
-          <td>{{props.item.stock}}</td>
+          <td :style="'color:'+(!props.item.stock?'#f56c6c':props.item.stock<=10?'#e6a23c':'')+''">{{props.item.stock||0}}</td>
           <td>{{props.item.pplace}}</td>
           <td>
             <cmp-button theme="line" @click="clkMd(props.item)">修改</cmp-button>
@@ -219,27 +219,6 @@
   @import '~@/style/theme.scss';
 
   .page {
-    padding: 20px;
-    height: 100%;
-    border-radius: 4px;
-    overflow: hidden;
-
-    > .wrap-operation {
-      margin-bottom: 5px;
-      padding: 5px 10px;
-      box-shadow: 0px 0px 10px #e8e8e8;
-      background-color: #fff;
-
-      > .button {
-        padding: 4px 10px;
-      }
-    }
-
-    > .wrap-main {
-      height: calc(100% - 40px - 5px);
-      box-shadow: 0px 0px 10px #e8e8e8;
-      background-color: #fff;
-    }
 
     .wrap-table {
       height: calc(100% - 50px);

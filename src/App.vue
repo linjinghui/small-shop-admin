@@ -122,6 +122,10 @@
               // 产品库管理
               path = '/#/home/product';
               break;
+            case 3:
+              // 订单管理
+              path = '/#/home/order';
+              break;
             default:
               path = '/#/home';
           }

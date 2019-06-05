@@ -41,7 +41,7 @@
           index: '',
           data: [
             {name: '产品库管理', icon: 'iconchanpinguanli1', urlType: 2},
-            {name: '订单管理', icon: 'icondingdan'},
+            {name: '订单管理', icon: 'icondingdan', urlType: 3},
             {name: '备货区', icon: 'iconRectangleCopy'},
             {name: '送货区', icon: 'iconsonghuo'}
           ]
@@ -65,13 +65,45 @@
 </script>
 
 <style lang="scss">
-  .page {
-    .search > input {
-      border: solid 1px #eee!important;
-      border-radius: 20px!important;
+  .index {
+    > header {
+      .search > input {
+        border: solid 1px #eee!important;
+        border-radius: 20px!important;
+      }
+      .search > input:focus {
+        border-color: #eee!important;
+      }
     }
-    .search > input:focus {
-      border-color: #eee!important;
+
+    > section {
+      // 子路由页面样式
+      > .page {
+        padding: 20px;
+        height: 100%;
+        border-radius: 4px;
+        overflow: hidden;
+
+        // 操作区域
+        > .wrap-operation {
+          margin-bottom: 5px;
+          padding: 5px 0;
+          // box-shadow: 0px 0px 10px #e8e8e8;
+          // background-color: #fff;
+
+          > .button {
+            padding: 4px 10px;
+          }
+        }
+
+        // 主区域
+        > .wrap-main {
+          height: calc(100% - 40px - 5px);
+          box-shadow: 0px 0px 10px #e8e8e8;
+          background-color: #fff;
+        }
+
+      }
     }
   }
 </style>
