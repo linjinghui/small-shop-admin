@@ -206,7 +206,6 @@
 
     > section {
       float: left;
-      padding: 20px;
       width: calc(100% - 200px);
       height: calc(100% - 50px);
       overflow: hidden;

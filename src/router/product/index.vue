@@ -1,34 +1,39 @@
 <template>
   <div class="page product">
-    <cmp-table v-bind="option" ref="rtable" @callback="callback">
-      <tr slot="head">
-        <td @click="clkOrder('name')">商品</td>
-        <td @click="clkOrder('unit')">购买单位</td>
-        <td @click="clkOrder('price')">单价</td>
-        <td @click="clkOrder('rebate')">折扣</td>
-        <td @click="clkOrder('stock')">库存</td>
-        <td @click="clkOrder('pplace')">产地</td>
-        <td @click="clkOrder('status')">操作</td>
-      </tr>
-      <tr slot="body" slot-scope="props">
-        <td><img class="pic" :src="props.item.pic">{{props.item.name}}</td>
-        <td>{{props.item.unit}}</td>
-        <td>{{props.item.price}}</td>
-        <td>{{props.item.rebate}}</td>
-        <td>{{props.item.stock}}</td>
-        <td>{{props.item.pplace}}</td>
-        <td>
-          <cmp-button theme="line" @click="clkMd(props.item)">修改</cmp-button>
-          <cmp-button v-if="props.item.status===2" @click="clkSj(props.item)">上架</cmp-button>
-          <cmp-button v-if="props.item.status===1" theme="warning" @click="clkXj(props.item)">下架</cmp-button>
-          <cmp-button v-if="props.item.status===1&&!props.item.recommend" theme="success" @click="clkTj(props.item)">推荐</cmp-button>
-          <cmp-button v-if="props.item.status===1&&props.item.recommend" theme="info" @click="clkQxtj(props.item)">取消推荐</cmp-button>
-          <cmp-button theme="danger" @click="clkDel(props.item)">删除</cmp-button>
-        </td>
-      </tr>
-    </cmp-table>
-    <cmp-pagebar v-bind="pboption" v-model="pboption.index" @callback="cbkPagebar"></cmp-pagebar>
-    <cmp-info v-model="optionInfo.show" :data="optionInfo.data"></cmp-info>
+    <div class="wrap-operation">
+      <cmp-button @click="clkNew">新增产品</cmp-button>
+    </div>
+    <div class="wrap-main">
+      <cmp-table v-bind="option" ref="rtable" @callback="callback">
+        <tr slot="head">
+          <td @click="clkOrder('name')">商品</td>
+          <td @click="clkOrder('unit')">购买单位</td>
+          <td @click="clkOrder('price')">单价</td>
+          <td @click="clkOrder('rebate')">折扣</td>
+          <td @click="clkOrder('stock')">库存</td>
+          <td @click="clkOrder('pplace')">产地</td>
+          <td @click="clkOrder('status')">操作</td>
+        </tr>
+        <tr slot="body" slot-scope="props">
+          <td><img class="pic" :src="props.item.pic">{{props.item.name}}</td>
+          <td>{{props.item.unit}}</td>
+          <td>{{props.item.price}}</td>
+          <td>{{props.item.rebate}}</td>
+          <td>{{props.item.stock}}</td>
+          <td>{{props.item.pplace}}</td>
+          <td>
+            <cmp-button theme="line" @click="clkMd(props.item)">修改</cmp-button>
+            <cmp-button v-if="props.item.status===2" @click="clkSj(props.item)">上架</cmp-button>
+            <cmp-button v-if="props.item.status===1" theme="warning" @click="clkXj(props.item)">下架</cmp-button>
+            <cmp-button v-if="props.item.status===1&&!props.item.recommend" theme="success" @click="clkTj(props.item)">推荐</cmp-button>
+            <cmp-button v-if="props.item.status===1&&props.item.recommend" theme="info" @click="clkQxtj(props.item)">取消推荐</cmp-button>
+            <cmp-button theme="danger" @click="clkDel(props.item)">删除</cmp-button>
+          </td>
+        </tr>
+      </cmp-table>
+      <cmp-pagebar v-bind="pboption" v-model="pboption.index" @callback="cbkPagebar"></cmp-pagebar>
+      <cmp-info v-model="optionInfo.show" :data="optionInfo.data" @callback="cbkInfo"></cmp-info>
+    </div>
   </div>
 </template>
 
@@ -92,11 +97,14 @@
       clkOrder: function (orderBy) {
         this.$refs.rtable.setOrder(this.option.data, orderBy);
       },
+      clkNew () {
+        this.$set(this.optionInfo, 'data', {});
+        this.$set(this.optionInfo, 'show', true);
+      },
       clkMd (info) {
         let _this = this;
 
         ajaxGetGoodInfo(info, function (data) {
-          console.log(data);
           _this.$set(_this.optionInfo, 'data', JSON.parse(JSON.stringify(data.result)));
           _this.$set(_this.optionInfo, 'show', true);
         });
@@ -189,6 +197,9 @@
           _this.$set(_this.pboption, 'totalSize', data.total);
           _this.$set(_this.pboption, 'totalPage', parseInt((data.total - 1) / _this.pboption.pagesize) + 1);
         });
+      },
+      cbkInfo (data) {
+        this.getDataList();
       }
     }
   };
@@ -208,11 +219,27 @@
   @import '~@/style/theme.scss';
 
   .page {
+    padding: 20px;
     height: 100%;
     border-radius: 4px;
-    background-color: #fff;
-    box-shadow: 0px 0px 10px #e8e8e8;
     overflow: hidden;
+
+    > .wrap-operation {
+      margin-bottom: 5px;
+      padding: 5px 10px;
+      box-shadow: 0px 0px 10px #e8e8e8;
+      background-color: #fff;
+
+      > .button {
+        padding: 4px 10px;
+      }
+    }
+
+    > .wrap-main {
+      height: calc(100% - 40px - 5px);
+      box-shadow: 0px 0px 10px #e8e8e8;
+      background-color: #fff;
+    }
 
     .wrap-table {
       height: calc(100% - 50px);

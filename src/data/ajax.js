@@ -66,7 +66,7 @@ export function ajaxUpperShelf (pms, callback, fail) {
   };
   
   if (!pms.stock || pms.stock <= 0) {
-    $tip({ show: true, text: '商品库存不足，无法上架', theme: 'warn' });
+    $tip({ show: true, text: '商品库存不足，无法上架', theme: 'warning' });
   } else {
     $http({
       method: 'POST',
@@ -208,6 +208,51 @@ export function ajaxDelImg (pms, callback, fail) {
       $tip({ show: true, text: successData.body.msg, theme: 'danger' });
     }
   });
+}
+
+/**
+ * 新增，编辑商品信息
+ * @param {function} callback - 回调函数 
+ */
+export function ajaxSaveGood (pms, callback, fail) {
+  let params = pms;
+
+  console.log(params);
+  if (!params.covers || params.covers.length === 0) {
+    $tip({ show: true, text: '请上传商品轮播图', theme: 'warning' });
+  } else if (!params.desc) {
+    $tip({ show: true, text: '请输入商品描述', theme: 'warning' });
+  } else if (!params.dtlpics || params.dtlpics.length === 0) {
+    $tip({ show: true, text: '请上传商品详情图片', theme: 'warning' });
+  } else if (!params.name) {
+    $tip({ show: true, text: '请输入商品名称', theme: 'warning' });
+  } else if (!params.pic) {
+    $tip({ show: true, text: '请上传商品图片', theme: 'warning' });
+  } else if (!params.pplace) {
+    $tip({ show: true, text: '请输入商品产地', theme: 'warning' });
+  } else if (!params.price) {
+    $tip({ show: true, text: '请输入商品单价', theme: 'warning' });
+  } else if (!params.rebate) {
+    $tip({ show: true, text: '请输入商品折扣', theme: 'warning' });
+  } else if (!params.stock) {
+    $tip({ show: true, text: '请输入商品库存', theme: 'warning' });
+  } else if (!params.unit) {
+    $tip({ show: true, text: '请输入商品购买单位', theme: 'warning' });
+  } else {
+    $http({
+      method: 'POST',
+      url: URL + '/admin/goods/save',
+      body: params
+    }).then(function (successData) {
+      if (successData.body.code === 200) {
+        callback && callback(successData.body);
+      } else if (fail) {
+        fail(data);
+      } else {
+        $tip({ show: true, text: successData.body.msg, theme: 'danger' });
+      }
+    });
+  }
 }
 
 /**

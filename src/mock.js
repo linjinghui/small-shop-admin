@@ -118,3 +118,10 @@ Mock.mock(/(\/admin\/file\/delete)/, {
   'code': 200,
   'result': true
 });
+
+// 新增，编辑商品信息
+Mock.mock(/(\/admin\/goods\/save)/, {
+  'msg': '',
+  'code': 200,
+  'result': '@id()'
+});

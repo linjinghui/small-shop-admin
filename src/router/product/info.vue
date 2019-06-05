@@ -2,7 +2,7 @@
   <cmp-sidebar v-model="show">
     <template slot="title">
       <div class="avater">
-        <img :src="dataInfo.pic">
+        <img :src="dataInfo.pic" v-if="dataInfo.pic">
         <cmp-button :fileoption="fileOption" @cbk_file="cbkHeaderFile" />
       </div>
       <span>{{dataInfo.name}}</span>
@@ -17,7 +17,7 @@
           <label class="star">轮播图:</label>
           <span class="f-dom">
             <img v-for="(url,index) in dataInfo.covers" :key="'lbt-'+index" :src="url" @click="clkDelCovers(url,index)">
-            <cmp-button theme="line" v-if="dataInfo.covers&&dataInfo.covers.length<config.lenBanner" :fileoption="fileOption" @cbk_file="cbkCovers">+</cmp-button>
+            <cmp-button theme="line" v-if="!dataInfo.covers||dataInfo.covers.length<config.lenBanner" :fileoption="fileOption" @cbk_file="cbkCovers">+</cmp-button>
           </span>
         </div>
         <div class="form-layer">
@@ -34,15 +34,15 @@
         </div>
         <div class="form-layer">
           <label class="star">产品单价:</label>
-          <cmp-input class="f-dom" maxlength="10" placeholder="请输入产品单价，如：10.5" v-model="dataInfo.price"></cmp-input>
+          <cmp-input class="f-dom" maxlength="10" rule="float" placeholder="请输入产品单价，如：10.5" v-model="dataInfo.price"></cmp-input>
         </div>
         <div class="form-layer">
           <label class="star">产品折扣:</label>
-          <cmp-input class="f-dom" maxlength="5" placeholder="请输入产品折扣，如：9.5 即表示95折" v-model="dataInfo.rebate"></cmp-input>
+          <cmp-input class="f-dom" maxlength="5" rule="float" placeholder="请输入产品折扣，如：9.5 即表示95折" v-model="dataInfo.rebate"></cmp-input>
         </div>
         <div class="form-layer">
           <label class="star">折后价:</label>
-          <cmp-input class="f-dom" readonly="true" v-model="dataInfo.rprice"></cmp-input>
+          <cmp-input class="f-dom" readonly="true" placeholder="根据单价和折扣自动计算" v-model="dataInfo.rprice"></cmp-input>
         </div>
         <div class="form-layer">
           <label class="star">产品库存:</label>
@@ -62,24 +62,31 @@
           <label class="star">产品详情:</label>
           <span class="f-dom">
             <img v-for="(url,index) in dataInfo.dtlpics" :key="'cpxq-'+index" :src="url" @click="clkDelDtlpics(url,index)">
-            <cmp-button theme="line" v-if="dataInfo.dtlpics&&dataInfo.dtlpics.length<config.lenDetailImg" :fileoption="fileOption" @cbk_file="cbkDtlpics">+</cmp-button>
+            <cmp-button theme="line" v-if="!dataInfo.dtlpics||dataInfo.dtlpics.length<config.lenDetailImg" :fileoption="fileOption" @cbk_file="cbkDtlpics">+</cmp-button>
           </span>
         </div>
       </div>
       <div class="wrap-preview" v-else>
-        <div class="banner">
+        <div class="banner" v-if="dataInfo.covers&&dataInfo.covers.length>0">
           <cmp-banner :nav="dataInfo.covers" navType="point" direction="hor">
             <img slot="page" class="page" v-for="(url,index) in dataInfo.covers" :key="'pv-lbt-'+index" :src="url">
           </cmp-banner>
         </div>
-        <p class="name">{{dataInfo.name}}</p>
-        <p class="desc">{{dataInfo.desc}}</p>
-        <p class="wrap-price">
+        <p class="name" v-if="dataInfo.name">{{dataInfo.name}}</p>
+        <p class="desc" v-if="dataInfo.desc">{{dataInfo.desc}}</p>
+        <p class="wrap-price" v-if="dataInfo.price">
           <span class="rprice">￥{{dataInfo.rprice}}</span>
           <span class="price">￥{{dataInfo.price}}</span>
         </p>
-        <div class="other"></div>
-        <div class="wrap-detail">
+        <div class="other">
+          <span v-if="dataInfo.unit">
+            <i class="iconfont icongouwudai"></i>{{dataInfo.unit}}
+          </span>
+          <span v-if="dataInfo.pplace">
+            <i class="iconfont iconshouhuodizhi5"></i>{{dataInfo.pplace}}
+          </span>
+        </div>
+        <div class="wrap-detail" v-if="dataInfo.dtlpics&&dataInfo.dtlpics.length>0">
           <header>商品详情</header>
           <img v-for="(url,index) in dataInfo.dtlpics" :key="'pv-cpxq-'+index" :src="url">
         </div>
@@ -87,7 +94,7 @@
     </template>
     <template slot="footer">
       <cmp-button theme="line" @click="show=false">取消</cmp-button>
-      <cmp-button theme="#2b8aff">保存</cmp-button>
+      <cmp-button theme="#2b8aff" @click="clkSave">保存</cmp-button>
     </template>
   </cmp-sidebar>
 </template>
@@ -95,7 +102,7 @@
 <script>
   import {Button, Input, Sidebar, Addlabel, Banner} from 'web-base-ui';
   import {mapState} from 'vuex';
-  import {ajaxUploadImg, ajaxDelImg} from '~root/data/ajax.js';
+  import {ajaxUploadImg, ajaxDelImg, ajaxSaveGood} from '~root/data/ajax.js';
   
   export default {
     name: 'Info',
@@ -172,6 +179,9 @@
       cbkCovers (files) {
         let _this = this;
 
+        if (!_this.dataInfo.covers) {
+          _this.$set(_this.dataInfo, 'covers', []);
+        }
         if (_this.dataInfo.covers.length < _this.$store.state.config.lenBanner) {
           ajaxUploadImg(files[0], function (data) {
             _this.dataInfo.covers.push(data.result);
@@ -212,6 +222,9 @@
       cbkDtlpics (files) {
         let _this = this;
 
+        if (!_this.dataInfo.dtlpics) {
+          _this.$set(_this.dataInfo, 'dtlpics', []);
+        }
         if (_this.dataInfo.dtlpics.length < _this.$store.state.config.lenDetailImg) {
           ajaxUploadImg(files[0], function (data) {
             _this.dataInfo.dtlpics.push(data.result);
@@ -248,6 +261,16 @@
           }
         });
       },
+      clkSave () {
+        let _this = this;
+        
+        ajaxSaveGood(this.dataInfo, function (data) {
+          _this.dataInfo.id = data.result;
+          _this.$emit('callback', _this.dataInfo);
+          _this.$tip({ show: true, text: '商品信息保存成功', theme: 'success' });
+          _this.show = false;
+        });
+      },
       // 计算折后价格
       countRprice () {
         let rprice = '';
@@ -256,9 +279,9 @@
           rprice = this.dataInfo.rebate / 10 * this.dataInfo.price;
           rprice = rprice.toFixed(2);
         } catch (error) {
-          // 
+          // alert(rprice);
         }
-        this.$set(this.dataInfo, 'rprice', rprice);
+        this.$set(this.dataInfo, 'rprice', isNaN(rprice) ? '' : rprice);
       }
     }
   };
@@ -283,14 +306,20 @@
         margin-right: 10px;
         width: 60px;
         height: 60px;
+        color: #ddd;
+        border: solid 1px;
         vertical-align: middle;
         cursor: pointer;
         overflow: hidden;
 
         > img {
+          position: absolute;
+          left: 0;
+          top: 0;
           display: block;
           width: 100%;
           height: 100%;
+          z-index: 2;
         }
 
         > .button {
@@ -306,6 +335,21 @@
         > .button:active  {
           opacity: 0!important;
         }
+      }
+      > .avater:after {
+        content: '+';
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        margin: auto;
+        width: 100%;
+        height: 100%;
+        line-height: 55px;
+        text-align: center;
+        font-size: 40px;
+        color: inherit;
       }
     }
     > header:before,
@@ -400,7 +444,6 @@
         > .banner {
           margin-bottom: 5px;
           height: 300px;
-          background-color: red;
         }
 
         > .name,
@@ -422,6 +465,22 @@
 
           > .price {
             text-decoration: line-through;
+          }
+        }
+
+        > .other {
+          display: flex;
+          padding: 10px 0;
+          color: #999;
+
+          > span {
+            flex: 1;
+            width: 0;
+
+            > .iconfont {
+              display: block;
+              font-size: 24px;
+            }
           }
         }
 
