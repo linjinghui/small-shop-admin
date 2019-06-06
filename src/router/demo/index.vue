@@ -3,9 +3,8 @@
     <div class="wrap-operation">
       <cmp-button>xxx</cmp-button>
     </div>
-    <div class="wrap-main">
-      <div class="wrap-empty center-hv"><i class="iconfont iconwushuju"></i>暂无订单~</div>
-    </div>
+    <div class="wrap-empty center-hv"><i class="iconfont iconwushuju"></i>暂无订单~</div>
+    <div class="wrap main"></div>
   </div>
 </template>
 
@@ -37,6 +36,6 @@
   .page {
     > .wrap-operation {}
 
-    > .wrap-main {}
+    > .wrap.main {}
   }
 </style>

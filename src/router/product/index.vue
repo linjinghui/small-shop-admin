@@ -1,15 +1,15 @@
 <template>
   <div class="page product">
-    <div class="wrap-operation">
+    <div class="wrap-operation" v-if="pboption.totalSize>0">
       <cmp-button @click="clkNew">新增产品</cmp-button>
     </div>
-    <div class="wrap-main">
-      <div class="wrap-empty center-hv" v-if="pboption.totalSize===0">
-        <i class="iconfont iconwushuju"></i>
-        还未添加产品, 
-        <cmp-button @click="clkNew">去添加</cmp-button>
-      </div>
-      <cmp-table v-bind="option" ref="rtable" v-if="pboption.totalSize>0" @callback="callback">
+    <div class="wrap-empty center-hv" v-if="pboption.totalSize===0">
+      <i class="iconfont iconwushuju"></i>
+      还未添加产品, 
+      <cmp-button @click="clkNew">去添加</cmp-button>
+    </div>
+    <div class="wrap main" v-if="pboption.totalSize>0">
+      <cmp-table v-bind="option" ref="rtable" @callback="callback">
         <tr slot="head">
           <td @click="clkOrder('name')">商品</td>
           <td @click="clkOrder('unit')">购买单位</td>
@@ -36,9 +36,9 @@
           </td>
         </tr>
       </cmp-table>
-      <cmp-pagebar v-bind="pboption" v-model="pboption.index" v-if="pboption.totalSize>0" @callback="cbkPagebar"></cmp-pagebar>
-      <cmp-info v-model="optionInfo.show" :data="optionInfo.data" @callback="cbkInfo"></cmp-info>
+      <cmp-pagebar v-bind="pboption" v-model="pboption.index" @callback="cbkPagebar"></cmp-pagebar>
     </div>
+    <cmp-info v-model="optionInfo.show" :data="optionInfo.data" @callback="cbkInfo"></cmp-info>
   </div>
 </template>
 
@@ -67,12 +67,12 @@
           // 当期页
           index: 1,
           // 总页数
-          totalPage: 1,
+          // totalPage: 1,
           pagesizes: [
             30, 50, 100
           ],
           pagesize: 10,
-          totalSize: 1
+          totalSize: ''
         },
         optionInfo: {
           show: false,
@@ -200,7 +200,7 @@
         ajaxGetGoods({name: _this.keyworld, page: _this.pboption.index, size: _this.pboption.pagesize}, function (data) {
           _this.$set(_this.option, 'data', data.result);
           _this.$set(_this.pboption, 'totalSize', data.total);
-          _this.$set(_this.pboption, 'totalPage', parseInt((data.total - 1) / _this.pboption.pagesize) + 1);
+          // _this.$set(_this.pboption, 'totalPage', parseInt((data.total - 1) / _this.pboption.pagesize) + 1);
         });
       },
       cbkInfo (data) {
@@ -225,8 +225,17 @@
 
   .page {
 
+    > .wrap.main {
+      height: calc(100% - 40px - 5px);
+    }
+
     .wrap-table {
       height: calc(100% - 50px);
+
+      td:nth-of-type(4),
+      td:nth-of-type(5) {
+        width: 8%;
+      }
     }
 
     .pic {

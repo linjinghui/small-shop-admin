@@ -177,6 +177,22 @@
   .input > input:not([readonly]):focus {
     border-color: $theme!important;
   }
+
+  // 时间插件
+  .layui-laydate {
+    .layui-laydate-footer span:hover,
+    .layui-laydate-footer span[lay-type="date"] {
+      color: $theme;
+    }
+    .laydate-day-mark::after {
+      background-color: $theme;
+    }
+  }
+
+  .wrap-menu > .line:active, 
+  .wrap-menu > .line.active {
+    color: $theme!important;
+  }
 </style>
 
 <style lang="scss" class="cssForm">

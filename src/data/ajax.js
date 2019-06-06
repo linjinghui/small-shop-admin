@@ -217,7 +217,6 @@ export function ajaxDelImg (pms, callback, fail) {
 export function ajaxSaveGood (pms, callback, fail) {
   let params = pms;
 
-  console.log(params);
   if (!params.covers || params.covers.length === 0) {
     $tip({ show: true, text: '请上传商品轮播图', theme: 'warning' });
   } else if (!params.desc) {
@@ -253,6 +252,63 @@ export function ajaxSaveGood (pms, callback, fail) {
       }
     });
   }
+}
+
+/**
+ * 获取订单列表
+ * @param {string} pms.id - 订单号
+ * @param {number} pms.status - 订单状态 1：待接单，2：备货中，3：配送中，4：已完成
+ * @param {function} callback - 回调函数 
+ */
+export function ajaxGetOrders (pms, callback, fail) {
+  let params = {
+    id: pms.id || '',
+    status: pms.status || '',
+    startTime: pms.startTime || '',
+    endTime: pms.endTime || '',
+		page: pms.page || 1,
+		size: pms.size || 10
+  };
+  console.log(params);
+  
+  $http({
+    method: 'GET',
+    url: URL + '/admin/orders',
+    params: params
+  }).then(function (successData) {
+    if (successData.body.code === 200) {
+      callback && callback(successData.body);
+    } else if (fail) {
+      fail(data);
+    } else {
+      $tip({ show: true, text: successData.body.msg, theme: 'danger' });
+    }
+  });
+}
+
+/**
+ * 获取订单详情
+ * @param {string} pms.id - 订单号
+ * @param {function} callback - 回调函数 
+ */
+export function ajaxGetOrderInfo (pms, callback, fail) {
+  let params = {
+    id: pms.id || ''
+  };
+  
+  $http({
+    method: 'GET',
+    url: URL + '/admin/orders/info',
+    params: params
+  }).then(function (successData) {
+    if (successData.body.code === 200) {
+      callback && callback(successData.body);
+    } else if (fail) {
+      fail(data);
+    } else {
+      $tip({ show: true, text: successData.body.msg, theme: 'danger' });
+    }
+  });
 }
 
 /**

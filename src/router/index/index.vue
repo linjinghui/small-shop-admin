@@ -79,6 +79,7 @@
     > section {
       // 子路由页面样式
       > .page {
+        position: relative;
         padding: 20px;
         height: 100%;
         border-radius: 4px;
@@ -96,38 +97,37 @@
           }
         }
 
-        // 主区域
-        > .wrap-main {
+        // 主区域模块
+        > .wrap {
           position: relative;
-          height: calc(100% - 40px - 5px);
           box-shadow: 0px 0px 10px #e8e8e8;
+          // border: solid 1px #f4f6f8;
           background-color: #fff;
-
-          // 空白提示
-          > .wrap-empty {
-            width: 200px;
-            height: 110px;
-            color: #999;
-            text-align: center;
-            font-size: 16px;
-            user-select: none;
-
-            > .iconfont {
-              display: block;
-              margin-bottom: 5px;
-              font-size: 60px;
-            }
-
-            > .button {
-              padding: 0;
-              font-size: inherit;
-              text-decoration: underline;
-              color: inherit;
-              background-color: transparent!important;
-            }
-          }
         }
 
+        // 空白提示
+        .wrap-empty {
+          width: 200px;
+          height: 110px;
+          color: #999;
+          text-align: center;
+          font-size: 16px;
+          user-select: none;
+
+          > .iconfont {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 60px;
+          }
+
+          > .button {
+            padding: 0;
+            font-size: inherit;
+            text-decoration: underline;
+            color: inherit;
+            background-color: transparent!important;
+          }
+        }
       }
     }
   }
