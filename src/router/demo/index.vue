@@ -3,7 +3,9 @@
     <div class="wrap-operation">
       <cmp-button>xxx</cmp-button>
     </div>
-    <div class="wrap-main">订单管理</div>
+    <div class="wrap-main">
+      <div class="wrap-empty center-hv"><i class="iconfont iconwushuju"></i>暂无订单~</div>
+    </div>
   </div>
 </template>
 
@@ -32,5 +34,9 @@
 <style lang="scss"></style>
 <style scoped lang="scss">
   @import '~@/style/theme.scss';
-  .page {}
+  .page {
+    > .wrap-operation {}
+
+    > .wrap-main {}
+  }
 </style>

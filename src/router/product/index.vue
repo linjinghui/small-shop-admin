@@ -4,7 +4,12 @@
       <cmp-button @click="clkNew">新增产品</cmp-button>
     </div>
     <div class="wrap-main">
-      <cmp-table v-bind="option" ref="rtable" @callback="callback">
+      <div class="wrap-empty center-hv" v-if="pboption.totalSize===0">
+        <i class="iconfont iconwushuju"></i>
+        还未添加产品, 
+        <cmp-button @click="clkNew">去添加</cmp-button>
+      </div>
+      <cmp-table v-bind="option" ref="rtable" v-if="pboption.totalSize>0" @callback="callback">
         <tr slot="head">
           <td @click="clkOrder('name')">商品</td>
           <td @click="clkOrder('unit')">购买单位</td>
@@ -31,7 +36,7 @@
           </td>
         </tr>
       </cmp-table>
-      <cmp-pagebar v-bind="pboption" v-model="pboption.index" @callback="cbkPagebar"></cmp-pagebar>
+      <cmp-pagebar v-bind="pboption" v-model="pboption.index" v-if="pboption.totalSize>0" @callback="cbkPagebar"></cmp-pagebar>
       <cmp-info v-model="optionInfo.show" :data="optionInfo.data" @callback="cbkInfo"></cmp-info>
     </div>
   </div>
@@ -67,7 +72,7 @@
             30, 50, 100
           ],
           pagesize: 10,
-          totalSize: 0
+          totalSize: 1
         },
         optionInfo: {
           show: false,

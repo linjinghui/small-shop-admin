@@ -5,9 +5,10 @@
       <!-- <cmp-button></cmp-button> -->
     </div>
     <div class="wrap-main">
-      订单管理<br>
+      <!-- 订单管理<br>
       ID|姓名|手机|总价|配送地址|备注<br>
-      详情展示
+      详情展示 -->
+      <div class="wrap-empty center-hv"><i class="iconfont iconwushuju"></i>暂无订单~</div>
     </div>
   </div>
 </template>
@@ -39,6 +40,8 @@
   @import '~@/style/theme.scss';
 
   .page {
-    
+    > .wrap-operation {}
+
+    > .wrap-main {}
   }
 </style>
