@@ -40,17 +40,39 @@
       </cmp-table>
       <cmp-pagebar v-bind="pboption" v-model="pboption.index" @callback="cbkPagebar"></cmp-pagebar>
     </div>
+    <!-- 订单商品列表 -->
     <div class="wrap goods" v-if="pboption.totalSize>0">
       <div class="wrap-empty center-hv" v-if="!orderInfo.name"><i class="iconfont iconwushuju"></i></div>
       <template v-else>
         <ul>
-          <li>1</li>
-          <li>2</li>
-          <li>3</li>
-          <li>4</li>
+          <li v-for="(info,index) in orderInfo.goods" :key="'good-'+index">
+            <div class="wrap good" :class="{'turn':info.edit}">
+              <i class="iconfont iconbianji1" @click.stop="clkEdit(info)"></i>
+              <img :src="info.pic">
+              <p>{{info.name}} x {{info.count}}<br>{{info.unit}}<br><span class="price">{{info.rprice}}</span></p>
+              <span>
+                <template v-if="info.money">{{info.money}}元</template>
+                <template v-if="info.weight">/{{info.weight}}斤</template>
+              </span>
+                <!-- 100/500斤 -->
+            </div>
+            <div class="wrap wrap-form horiz center-hv">
+              <i class="cicon-cross iconfont" @click.stop="info.edit=false"></i>
+              <i class="cicon-tick iconfont" @click.stop="clkConfirm(info)"></i>
+              <div class="form-layer">
+                <label class="star">实称重量(斤):</label>
+                <cmp-input class="f-dom" maxlength="5" rule="number" placeholder="请输入实称重量" v-model="info._weight"></cmp-input>
+              </div>
+              <div class="form-layer">
+                <label class="star">实称价格:</label>
+                <cmp-input class="f-dom" maxlength="10" rule="float" placeholder="请输入实称价格" v-model="info._money"></cmp-input>
+              </div>
+            </div>
+          </li>
         </ul>
       </template>
     </div>
+    <!-- 订单配送信息 -->
     <div class="wrap user" v-if="pboption.totalSize>0">
       <div class="wrap-empty center-hv" v-if="!orderInfo.name"><i class="iconfont iconwushuju"></i></div>
       <template v-else>
@@ -66,7 +88,7 @@
 </template>
 
 <script>
-  import {Table, Button, Pagebarpagesize, Dropmenu, Laydate} from 'web-base-ui';
+  import {Table, Button, Pagebarpagesize, Dropmenu, Laydate, Input} from 'web-base-ui';
   import {ajaxGetOrders, ajaxGetOrderInfo} from '~root/data/ajax.js';
   import QRCode from 'qrcode';
   
@@ -77,10 +99,12 @@
       cmpButton: Button,
       cmpPagebar: Pagebarpagesize,
       cmpDropMenu: Dropmenu,
-      cmpLaydate: Laydate
+      cmpLaydate: Laydate,
+      cmpInput: Input
     },
     data () {
       return {
+        name: '',
         search: {
           id: '',
           status: '',
@@ -166,8 +190,20 @@
         let _this = this;
 
         ajaxGetOrderInfo(info, function (data) {
+          //  设置激活项
           _this.$set(_this.option, 'activeId', info.id);
-          _this.orderInfo = data.result;
+
+          let _data = data.result;
+                    
+          // 设置单个商品总价
+          _data.goods.forEach(item => {
+            item.money = _this.$root.countMoney({
+              count: item.count, 
+              price: item.rprice
+            });
+            item._money = item.money;
+          });
+          _this.orderInfo = _data;
           // 生成二维码
           QRCode.toDataURL('http://www.baidu.com?id=' + info.id, function (a, url) {
             _this.$set(_this.orderInfo, 'qrcodeUrl', url);
@@ -189,6 +225,20 @@
         this.search.status = data[0].value;
         this.pboption.index = 1;
         this.getDataList();
+      },
+      clkEdit (data) {
+        this.$set(data, 'edit', true);
+      },
+      clkConfirm (data) {
+        this.$set(data, 'edit', false);
+        this.$set(data, 'money', data._money);
+        this.$set(data, 'weight', data._weight);
+      },
+      countMoney (data) {
+        return this.$root.countMoney({
+          count: data.count, 
+          price: data.rprice
+        });
       }
     }
   };
@@ -244,10 +294,91 @@
         justify-content: space-between;
 
         > li {
-          flex: 50%;
-          flex-shrink: 0;
-          border: solid 1px;
+          position: relative;
+          float: left;
+          width: 50%;
+          overflow: hidden;
+          border: solid 1px #f4f6f8;
+
+          > .wrap > .iconfont {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 24px;
+            height: 24px;
+            line-height: 24px;
+            font-size: 18px;
+            text-align: center;
+            color: #fff;
+            background-color: #ddd;
+            cursor: pointer;
+            z-index: 3;
+          }
+          > .wrap > .cicon-cross {
+            right: 26px;
+          }
+          > .wrap > .cicon-tick {
+            background-color: $theme;
+
+          }
+
+          > .wrap.good {
+            position: relative;
+            padding: 5px;
+            line-height: 24px;
+            font-size: 0;
+            transform-origin: left bottom;
+            transition: transform .2s;
+            background-color: #fff;
+            z-index: 2;
+
+            > img, > p, > span {
+              display: inline-block;
+              vertical-align: middle;
+              font-size: 14px;
+            }
+
+            > img {
+              width: 80px;
+              height: 80px;
+            }
+
+            > p {
+              padding: 5px 10px;
+              width: calc(100% - 80px - 140px);
+            }
+
+            > span {
+              width: 140px;
+              text-align: center;
+            }
+
+          }
+          > .wrap.good.turn {
+            transform: rotate(-90deg);
+          }
+          > .wrap.wrap-form {
+            padding: 5px;
+            z-index: 1;
+
+            > .form-layer {
+              margin: 0 auto;
+              margin-bottom: 5px;
+              width: 300px;
+            }
+          }
         }
+      }
+
+      .price {
+        color: $theme;
+      }
+      .price:before {
+        content: '￥';
+      }
+      .price.del {
+        color: #888;
+        text-decoration: line-through;
       }
     }
 
@@ -298,6 +429,17 @@
 
     .wrapper-pagebar-pagesize {
       padding: 10px;
+    }
+  }
+
+  @keyframes rollIn {
+    0%{
+      opacity: 0;
+      transform: translate3d(-100%, 0, 0) rotate(-120deg);
+    }
+    to{
+      opacity: 1;
+      transform: translateZ(0);
     }
   }
 </style>

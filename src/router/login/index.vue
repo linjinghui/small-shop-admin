@@ -69,12 +69,12 @@
       ...mapState(['theme', 'borderColor'])
     },
     mounted: function () {
-      let _this = this;
+      // let _this = this;
 
-      console.log(this.$store.state.user);      
-      setTimeout(() => {
-        _this.$store.commit('setAge');
-      }, 3000);
+      // console.log(this.$store.state.user);      
+      // setTimeout(() => {
+      //   _this.$store.commit('setAge');
+      // }, 3000);
     },
     methods: {
       login: function () {

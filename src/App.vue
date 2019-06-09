@@ -138,6 +138,18 @@
           search = '?' + search[1];
         }
         window.location.href = location.href.split('/#/')[0] + path + search;
+      },
+      // 计算商品总价
+      countMoney: function (data) {
+        let money = '';
+
+        try {
+          money = data.count * data.price;
+          money = money.toFixed(2);
+        } catch (error) {
+          // 
+        }
+        return money;
       }
     }
   };
