@@ -22,7 +22,7 @@
             <cmp-input v-model="vcode" maxlength="6" placeholder="请输入验证码">
               <i class="iconfont iconyanzhengma center-v" slot="left"></i>
             </cmp-input>
-            <img class="center-hv" src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1559131287523&di=2a7f8363295c8d25e950b51fcfde93d9&imgtype=0&src=http%3A%2F%2Fwww.xiaobaixitong.com%2Fd%2Ffile%2Fhelp%2F2018-08-06%2Ff15ce5d652d8da38e9e0e384f35b39d7.png">
+            <img class="img center-hv" :src="vcodeUrl" @click="getCaptcha"/>
           </div>
           
           <cmp-button :theme="theme" @click="login">立即登录</cmp-button>
@@ -41,6 +41,7 @@
 <script>
   import {mapState} from 'vuex';
   import {Input, Button} from 'web-base-ui';
+  import {ajaxGetCaptcha, ajaxLogin} from '~root/data/ajax.js';
   
   export default {
     name: 'Login',
@@ -58,6 +59,7 @@
         account: '',
         pwd: '',
         vcode: '',
+        vcodeUrl: '',
         optionBreadcrumbs: {
           list: [
             {name: 'nav1', disabled: true}, {name: 'nav2'}, {name: 'nav3', disabled: true}, {name: 'nav4'}
@@ -69,6 +71,7 @@
       ...mapState(['theme', 'borderColor'])
     },
     mounted: function () {
+      this.getCaptcha();
       // let _this = this;
 
       // console.log(this.$store.state.user);      
@@ -77,8 +80,16 @@
       // }, 3000);
     },
     methods: {
+      getCaptcha: function () {
+        this.vcodeUrl = ajaxGetCaptcha();
+      },
       login: function () {
-        this.$root.toPage('', 1);
+        console.log(document.cookie);
+        let _this = this;
+
+        ajaxLogin({account: this.account, pwd: this.pwd, vcode: this.vcode}, res => {
+          _this.$root.toPage('', 1);
+        });
       },
       stip: function () {
         this.$tip({ show: true, text: '提示内容', theme: 'warning' });
@@ -215,7 +226,7 @@
         }
 
         .form-layer.vcode {
-          > img {
+          > .img {
             left: inherit;
             width: 100px;
             height: 24px;

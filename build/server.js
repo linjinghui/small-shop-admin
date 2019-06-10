@@ -41,11 +41,11 @@ app.get('/', (req, res) => {
   });
 });
 
-// // 代理开始
-// app.use('/apiframe', proxy('/apiframe', {
-//   target: 'http://192.168.1.40:5001',
-//   changeOrigoin: true
-// }));
+// 代理开始
+app.use('/api', proxy('/api', {
+  target: 'http://192.168.1.40:5004',
+  changeOrigoin: true
+}));
 
 // app.use('/apiwidget', proxy('/apiwidget', {
 //   target: 'http://192.168.1.40:5001',

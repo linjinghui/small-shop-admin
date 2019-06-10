@@ -1,5 +1,6 @@
 // import Vue from 'vue';
 import VueResource from 'vue-resource';
+// import Cookies from 'cookies';
 // import {lsgGetData, lsgDeleteData, ssgGetData, ssgSaveData, ssgDeleteData} from '../../node_modules/web-js-tool/libs/js/util.js';
 
 let _this = new Vue();
@@ -25,7 +26,7 @@ $http.interceptors.push(function (request, next) {
       request.headers.set(key, request.header[key]);
     }
   } else {
-    request.headers.set('Authorization', token);
+    // request.headers.set('x-csrf-token', Cookies.get('csrfToken'));
   }
   // 拦截处理全局ajax回调
   next(function (response) {
