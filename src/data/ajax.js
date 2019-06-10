@@ -33,7 +33,8 @@ export function ajaxLogin (pms, callback, fail) {
     $http({
       method: 'POST',
       url: URL + '/login',
-      body: params
+      body: params,
+      emulateJSON: true
     }).then(function (successData) {
       if (successData.body.code === 200) {
         callback && callback(successData.body);

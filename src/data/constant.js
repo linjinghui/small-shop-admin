@@ -9,6 +9,22 @@ let $tip = _this.$tip;
 const TIMEOUT = 15000;
 const ERRORSERVICE = '服务异常，请稍后再试！';
 
+function getCookie (cname) {
+  var name = cname + "=";
+  var decodedCookie = decodeURIComponent(document.cookie);
+  var ca = decodedCookie.split(';');
+  for(var i = 0; i <ca.length; i++) {
+      var c = ca[i];
+      while (c.charAt(0) == ' ') {
+          c = c.substring(1);
+       }
+       if (c.indexOf(name) == 0) {
+          return c.substring(name.length, c.length);
+       }
+   }
+  return "";
+} 
+
 $http.interceptors.push(function (request, next) {
   let token = '';
   // 设置超时
@@ -25,9 +41,10 @@ $http.interceptors.push(function (request, next) {
     for (var key in request.header) {
       request.headers.set(key, request.header[key]);
     }
-  } else {
-    // request.headers.set('x-csrf-token', Cookies.get('csrfToken'));
   }
+  // 设置csrfToken
+  request.headers.set('x-csrf-token', getCookie('csrfToken'));
+  
   // 拦截处理全局ajax回调
   next(function (response) {
     // 隐藏加载动画

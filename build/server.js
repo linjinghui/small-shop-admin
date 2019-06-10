@@ -43,7 +43,7 @@ app.get('/', (req, res) => {
 
 // 代理开始
 app.use('/api', proxy('/api', {
-  target: 'http://192.168.1.40:5004',
+  target: 'http://127.0.0.1:5004',
   changeOrigoin: true
 }));
 
