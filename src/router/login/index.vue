@@ -4,28 +4,52 @@
       <div class="left">
         <!-- 导航 -->
         <div class="nav" >
-          <span v-for="(info,index) in nav.data" :key="'ln-'+index" :class="{'active':nav.active===index}" :style="{'border-color':nav.active===index&&theme}">{{info}}</span>
+          <span v-for="(info,index) in nav.data" :key="'ln-'+index" :class="{'active':nav.active===index}" @click="clkNav(index)">{{info}}</span>
         </div>
         <!-- 登录表单 -->
-        <div class="login wrap-form">
+        <div class="login wrap-form" v-if="nav.active===0">
           <div class="form-layer">
-            <cmp-input v-model="account" maxlength="30" placeholder="请输入帐号" autofocus="true">
+            <cmp-input v-model="login.account" maxlength="30" placeholder="请输入帐号" autofocus="true">
               <i class="iconfont iconzhanghao center-v" slot="left"></i>
             </cmp-input>
           </div>
           <div class="form-layer">
-            <cmp-input v-model="pwd" maxlength="50" type="password" placeholder="请输入密码">
+            <cmp-input v-model="login.pwd" maxlength="50" type="password" placeholder="请输入密码">
               <i class="iconfont iconwebicon204 center-v" slot="left"></i>
             </cmp-input>
           </div>
           <div class="form-layer vcode">
-            <cmp-input v-model="vcode" maxlength="6" placeholder="请输入验证码">
+            <cmp-input v-model="login.vcode" maxlength="6" placeholder="请输入验证码">
               <i class="iconfont iconyanzhengma center-v" slot="left"></i>
             </cmp-input>
-            <img class="img center-hv" :src="vcodeUrl" @click="getCaptcha"/>
+            <img class="img center-hv" :src="login.vcodeUrl" @click="getCaptcha(1)"/>
           </div>
-          
-          <cmp-button :theme="theme" @click="login">立即登录</cmp-button>
+          <cmp-button :theme="theme" @click="clkLogin">立即登录</cmp-button>
+        </div>
+        <!-- 注册表单 -->
+        <div class="regist wrap-form" v-if="nav.active===1">
+          <div class="form-layer">
+            <cmp-input v-model="regist.account" maxlength="30" placeholder="输入注册帐号" autofocus="true">
+              <i class="iconfont iconzhanghao center-v" slot="left"></i>
+            </cmp-input>
+          </div>
+          <div class="form-layer">
+            <cmp-input v-model="regist.pwd" maxlength="50" type="password" placeholder="输入密码">
+              <i class="iconfont iconwebicon204 center-v" slot="left"></i>
+            </cmp-input>
+          </div>
+          <div class="form-layer">
+            <cmp-input v-model="regist.cpwd" maxlength="50" type="password" placeholder="确认密码">
+              <i class="iconfont iconwebicon204 center-v" slot="left"></i>
+            </cmp-input>
+          </div>
+          <div class="form-layer vcode">
+            <cmp-input v-model="regist.vcode" maxlength="6" placeholder="输入验证码">
+              <i class="iconfont iconyanzhengma center-v" slot="left"></i>
+            </cmp-input>
+            <img class="img center-hv" :src="regist.vcodeUrl" @click="getCaptcha(2)"/>
+          </div>          
+          <cmp-button :theme="theme" @click="clkRegist">注册</cmp-button>
         </div>
       </div>
       <div class="right center-hv" v-if="showHelp" @click.stop>
@@ -41,7 +65,8 @@
 <script>
   import {mapState} from 'vuex';
   import {Input, Button} from 'web-base-ui';
-  import {ajaxGetCaptcha, ajaxLogin} from '~root/data/ajax.js';
+  import {ajaxGetCaptcha, ajaxLogin, ajaxRegist} from '~root/data/ajax.js';
+import { setTimeout } from 'timers';
   
   export default {
     name: 'Login',
@@ -52,18 +77,22 @@
     data () {
       return {
         nav: {
-          active: 0,
+          active: '',
           data: ['登录', '注册']
         },
         showHelp: false,
-        account: '',
-        pwd: '',
-        vcode: '',
-        vcodeUrl: '',
-        optionBreadcrumbs: {
-          list: [
-            {name: 'nav1', disabled: true}, {name: 'nav2'}, {name: 'nav3', disabled: true}, {name: 'nav4'}
-          ]
+        login: {
+          account: '',
+          pwd: '',
+          vcode: '',
+          vcodeUrl: ''
+        },
+        regist: {
+          account: '',
+          pwd: '',
+          cpwd: '',
+          vcode: '',
+          vcodeUrl: ''
         }
       };
     },
@@ -71,26 +100,39 @@
       ...mapState(['theme', 'borderColor'])
     },
     mounted: function () {
-      this.getCaptcha();
-      // let _this = this;
-
-      // console.log(this.$store.state.user);      
-      // setTimeout(() => {
-      //   _this.$store.commit('setAge');
-      // }, 3000);
+      this.clkNav(0);
     },
     methods: {
-      getCaptcha: function () {
-        this.vcodeUrl = ajaxGetCaptcha();
+      getCaptcha: function (type) {
+        if (type === 1) {
+          this.$set(this.login, 'vcodeUrl', ajaxGetCaptcha(type));
+        } else {
+          this.$set(this.regist, 'vcodeUrl', ajaxGetCaptcha(type));
+        }
       },
-      login: function () {
-        console.log(document.cookie);
+      clkNav (index) {
+        this.$set(this.nav, 'active', index);
+        this.getCaptcha(index + 1);
+      },
+      clkLogin: function () {
         let _this = this;
 
-        ajaxLogin({account: this.account, pwd: this.pwd, vcode: this.vcode}, res => {
+        ajaxLogin(this.login, res => {
           _this.$root.toPage('', 1);
         });
       },
+      clkRegist: function () {
+        let _this = this;
+
+        ajaxRegist(this.regist, res => {
+          _this.$tip({ show: true, text: '注册成功', theme: 'success' });
+          setTimeout(() => {
+            _this.regist = {};
+            _this.clkNav(0);
+          }, 3000);
+        });
+      },
+      // ===============
       stip: function () {
         this.$tip({ show: true, text: '提示内容', theme: 'warning' });
       },
@@ -167,7 +209,8 @@
 <style lang="scss">
   .login {
     .input > .iconfont {
-      font-size: 20px !important;;
+      line-height: 32px;
+      font-size: 20px !important;
       background-color: transparen !important;
     }
     .vcode .cicon-cross-crle-chr-cpt {

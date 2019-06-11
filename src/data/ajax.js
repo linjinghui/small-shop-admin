@@ -8,8 +8,8 @@ const URL = '/api';
  * 获取图形验证码
  * @param {function} callback - 回调函数 
  */
-export function ajaxGetCaptcha () {
-  return URL + '/captcha?t=' + new Date().getTime();
+export function ajaxGetCaptcha (type) {
+  return URL + '/captcha?type=' + type + '&t=' + new Date().getTime();
 }
 
 /**
@@ -33,6 +33,43 @@ export function ajaxLogin (pms, callback, fail) {
     $http({
       method: 'POST',
       url: URL + '/login',
+      body: params,
+      emulateJSON: true
+    }).then(function (successData) {
+      if (successData.body.code === 200) {
+        callback && callback(successData.body);
+      } else if (fail) {
+        fail(data);
+      } else {
+        $tip({ show: true, text: successData.body.msg, theme: 'danger' });
+      }
+    });
+  }
+}
+
+/**
+ * 注册
+ * @param {function} callback - 回调函数 
+ */
+export function ajaxRegist (pms, callback, fail) {
+  let params = {
+    account: pms.account || '',
+    pwd: pms.pwd || '',
+    vcode: pms.vcode || ''
+  };
+  
+  if (!params.account) {
+    $tip({ show: true, text: '请输入帐号', theme: 'warning' });
+  } else if (!params.pwd) {
+    $tip({ show: true, text: '请输入密码', theme: 'warning' });
+  } else if (!params.vcode) {
+    $tip({ show: true, text: '请输入验证码', theme: 'warning' });
+  } else if (pms.pwd !== pms.cpwd) {
+    $tip({ show: true, text: '两次输入密码不一致', theme: 'warning' });
+  } else {
+    $http({
+      method: 'POST',
+      url: URL + '/regist',
       body: params,
       emulateJSON: true
     }).then(function (successData) {

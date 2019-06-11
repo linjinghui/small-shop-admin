@@ -47,37 +47,6 @@ app.use('/api', proxy('/api', {
   changeOrigoin: true
 }));
 
-// app.use('/apiwidget', proxy('/apiwidget', {
-//   target: 'http://192.168.1.40:5001',
-//   changeOrigoin: true
-// }));
-
-// app.use('/apiorgan', proxy('/apiorgan', {
-//   target: 'http://192.168.1.40:5001',
-//   changeOrigin: true
-// }));
-
-// app.use('/apidata', proxy('/apidata', {
-//   target: 'http://192.168.1.40:5001',
-//   changeOrigin: true
-// }));
-
-// app.use('/apislt/index', proxy('/apislt/index', {
-//   target: 'http://192.168.1.40:5001',
-//   changeOrigin: true
-// }));
-
-// app.use('/apislt/portal', proxy('/apislt/portal', {
-//   target: 'http://192.168.1.40:5001',
-//   changeOrigin: true
-// }));
-
-// // 工作台相关代理
-// app.use('/apidesk/portal', proxy('/apidesk/portal', {
-//   target: 'http://192.168.1.40:5001',
-//   changeOrigin: true
-// }));
-
 app.listen(config.port, () => {
   // console.log(`Listening at http://localhost:${config.port}`)
   var url = 'http://localhost:' + config.port;
