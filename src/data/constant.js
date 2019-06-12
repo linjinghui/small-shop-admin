@@ -1,29 +1,11 @@
-// import Vue from 'vue';
 import VueResource from 'vue-resource';
-// import Cookies from 'cookies';
-// import {lsgGetData, lsgDeleteData, ssgGetData, ssgSaveData, ssgDeleteData} from '../../node_modules/web-js-tool/libs/js/util.js';
+import {getCookie} from 'web-js-tool';
 
 let _this = new Vue();
 let $http = Vue.use(VueResource).http;
 let $tip = _this.$tip;
 const TIMEOUT = 15000;
 const ERRORSERVICE = '服务异常，请稍后再试！';
-
-function getCookie (cname) {
-  var name = cname + "=";
-  var decodedCookie = decodeURIComponent(document.cookie);
-  var ca = decodedCookie.split(';');
-  for(var i = 0; i <ca.length; i++) {
-      var c = ca[i];
-      while (c.charAt(0) == ' ') {
-          c = c.substring(1);
-       }
-       if (c.indexOf(name) == 0) {
-          return c.substring(name.length, c.length);
-       }
-   }
-  return "";
-} 
 
 $http.interceptors.push(function (request, next) {
   let token = '';
@@ -53,15 +35,13 @@ $http.interceptors.push(function (request, next) {
       $tip({ show: true, text: '系统异常，请检查网络并稍后再试!', theme: 'danger' });
     } else if (response.status === 404) {
       $tip({ show: true, text: '请求地址不存在：【' + response.url + '】', theme: 'danger' });
-    } else if (response.body.code === 3) {
-      window.location.href = '/#/login';
+    } else if (response.status === 401) {
+      // 身份认证已失效，请重新登录
       $tip({ show: true, text: '身份认证已失效，请重新登录！', theme: 'danger' });
-      return null;
+      setTimeout(function () {
+        window.location.href = location.href.split('/#/')[0] + '/#/';
+      }, 1500);
     }
-    //  else if ((response.status === 400 && token.length === 0) || response.status === 401 || response.body.code === 3) {
-    //   // 身份认证已失效，请重新登录
-    //   $tip({ show: true, text: '身份认证已失效，请重新登录！', theme: 'danger' });
-    // }
     let body = response.body;
     if (typeof body === 'string' && body.indexOf('html') >= 0) {
       window.EVENTBUS.$emit('changeTip', {'display': true, 'theme': 'error', 'content': ERRORSERVICE});

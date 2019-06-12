@@ -112,7 +112,7 @@
           switch (type) {
             case 0:
               // 登录页
-              path = '/#/login';
+              path = '/#/';
               break;
             case 1:
               // 首页
