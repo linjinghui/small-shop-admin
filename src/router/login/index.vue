@@ -24,13 +24,18 @@
             </cmp-input>
             <img class="img center-hv" :src="login.vcodeUrl" @click="getCaptcha(1)"/>
           </div>
-          <cmp-button :theme="theme" @click="clkLogin">立即登录</cmp-button>
+          <cmp-button @click="clkLogin">立即登录</cmp-button>
         </div>
         <!-- 注册表单 -->
         <div class="regist wrap-form" v-if="nav.active===1">
           <div class="form-layer">
             <cmp-input v-model="regist.account" maxlength="30" placeholder="输入注册帐号" autofocus="true">
               <i class="iconfont iconzhanghao center-v" slot="left"></i>
+            </cmp-input>
+          </div>
+          <div class="form-layer">
+            <cmp-input v-model="regist.name" maxlength="10" placeholder="输入店铺名称">
+              <i class="iconfont iconcard center-v" slot="left"></i>
             </cmp-input>
           </div>
           <div class="form-layer">
@@ -49,11 +54,11 @@
             </cmp-input>
             <img class="img center-hv" :src="regist.vcodeUrl" @click="getCaptcha(2)"/>
           </div>          
-          <cmp-button :theme="theme" @click="clkRegist">注册</cmp-button>
+          <cmp-button @click="clkRegist">注册</cmp-button>
         </div>
       </div>
       <div class="right center-hv" v-if="showHelp" @click.stop>
-        <p :style="'border-bottom:solid 1px '+borderColor">微信扫码添加</p>
+        <p>微信扫码添加</p>
         <img src="../../images/dev.jpg">
         <small>请使用微信扫码添加开发为好友，进行咨询</small>
       </div>
@@ -63,10 +68,8 @@
 </template>
 
 <script>
-  import {mapState} from 'vuex';
   import {Input, Button} from 'web-base-ui';
   import {ajaxGetCaptcha, ajaxLogin, ajaxRegist} from '~root/data/ajax.js';
-import { setTimeout } from 'timers';
   
   export default {
     name: 'Login',
@@ -96,9 +99,7 @@ import { setTimeout } from 'timers';
         }
       };
     },
-    computed: {
-      ...mapState(['theme', 'borderColor'])
-    },
+    computed: {},
     mounted: function () {
       this.clkNav(0);
     },
@@ -129,7 +130,7 @@ import { setTimeout } from 'timers';
           setTimeout(() => {
             _this.regist = {};
             _this.clkNav(0);
-          }, 3000);
+          }, 1000);
         });
       },
       // ===============

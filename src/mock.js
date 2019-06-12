@@ -106,11 +106,11 @@ Mock.mock(/(\/admin\/goods\/recommend)/, {
 });
 
 // 上传图片
-Mock.mock(/(\/admin\/file\/upload)/, {
-  'msg': '',
-  'code': 200,
-  'result|1': ['https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/shuijiao.jpg', 'https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/muwu.jpg', 'https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/cbd.jpg']
-});
+// Mock.mock(/(\/admin\/upload\/img)/, {
+//   'msg': '',
+//   'code': 200,
+//   'result|1': ['https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/shuijiao.jpg', 'https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/muwu.jpg', 'https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/cbd.jpg']
+// });
 
 // 删除上传的图片
 Mock.mock(/(\/admin\/file\/delete)/, {

@@ -1,4 +1,5 @@
 import {$http, $tip} from './constant.js';
+import {Base64} from 'web-js-tool/libs/base64.js';
 // import {ssgGetData, ssgSaveData, ssgDeleteData} from 'web-js-tool';
 
 const URL = '/api';
@@ -19,7 +20,7 @@ export function ajaxGetCaptcha (type) {
 export function ajaxLogin (pms, callback, fail) {
   let params = {
     account: pms.account || '',
-    pwd: pms.pwd || '',
+    pwd: pms.pwd ? (new Base64().doEncode(pms.pwd)) : '',
     vcode: pms.vcode || ''
   };
   
@@ -54,6 +55,7 @@ export function ajaxLogin (pms, callback, fail) {
 export function ajaxRegist (pms, callback, fail) {
   let params = {
     account: pms.account || '',
+    name: pms.name || '',
     pwd: pms.pwd || '',
     vcode: pms.vcode || ''
   };
@@ -255,7 +257,7 @@ export function ajaxUploadImg (pms, callback, fail) {
   };
 
   formData.append('datafile', pms.file);
-  $http.post(URL + '/admin/file/upload', formData, config).then(function (successData) {
+  $http.post(URL + '/admin/upload/img', formData, config).then(function (successData) {
     if (successData.body.code === 200) {
       callback && callback(successData.body);
     } else if (fail) {
