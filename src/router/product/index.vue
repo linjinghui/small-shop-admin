@@ -185,7 +185,7 @@
       clkTj (info) {
         let _this = this;
 
-        ajaxGoodRecommend({id: info.id, recommend: true}, function (data) {
+        ajaxGoodRecommend({id: info._id, recommend: true}, function (data) {
           // 设置推荐状态为已推荐
           info.recommend = true;
           _this.$tip({ show: true, text: '商品推荐成功', theme: 'success' });
@@ -194,7 +194,7 @@
       clkQxtj (info) {
         let _this = this;
 
-        ajaxGoodRecommend({id: info.id, recommend: false}, function (data) {
+        ajaxGoodRecommend({id: info._id, recommend: false}, function (data) {
           // 设置推荐状态为已取消推荐
           info.recommend = false;
           _this.$tip({ show: true, text: '商品已取消推荐', theme: 'success' });

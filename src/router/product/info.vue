@@ -84,13 +84,13 @@
         </div>
         <p class="name" v-if="dataInfo.name">{{dataInfo.name}}</p>
         <p class="desc" v-if="dataInfo.desc">{{dataInfo.desc}}</p>
-        <p class="wrap-price" v-if="dataInfo.price">
-          <span class="rprice">￥{{dataInfo.rprice}}</span>
-          <span class="price">￥{{dataInfo.price}}</span>
+        <p class="wrap-price" v-if="dataInfo.specs[0].price">
+          <span class="rprice">￥{{dataInfo.specs[0].price}}</span>
+          <!-- <span class="price">￥{{dataInfo.specs[0].price}}</span> -->
         </p>
         <div class="other">
-          <span v-if="dataInfo.unit">
-            <i class="iconfont icongouwudai"></i>{{dataInfo.unit}}
+          <span v-if="dataInfo.specs[0].name">
+            <i class="iconfont icongouwudai"></i>{{dataInfo.specs[0].name}}
           </span>
           <span v-if="dataInfo.origin_place">
             <i class="iconfont iconshouhuodizhi5"></i>{{dataInfo.origin_place}}
@@ -317,6 +317,7 @@
           display: block;
           width: 100%;
           height: 100%;
+          background-color: #fff;
           z-index: 2;
         }
 

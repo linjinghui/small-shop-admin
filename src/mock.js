@@ -90,11 +90,11 @@ Mock.setup({
 // });
 
 // 商品上架
-Mock.mock(/(\/admin\/goods\/uppershelf)/, {
-  'msg': '',
-  'code': 200,
-  'result': true
-});
+// Mock.mock(/(\/admin\/product\/status)/, {
+//   'msg': '',
+//   'code': 200,
+//   'result': true
+// });
 
 // 商品下架
 Mock.mock(/(\/admin\/goods\/lowershelf)/, {
@@ -111,11 +111,11 @@ Mock.mock(/(\/admin\/goods\/delete)/, {
 });
 
 // 商品设置推荐状态
-Mock.mock(/(\/admin\/goods\/recommend)/, {
-  'msg': '',
-  'code': 200,
-  'result': true
-});
+// Mock.mock(/(\/admin\/product\/recommend)/, {
+//   'msg': '',
+//   'code': 200,
+//   'result': true
+// });
 
 // 上传图片
 // Mock.mock(/(\/admin\/upload\/img)/, {

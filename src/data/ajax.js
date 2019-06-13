@@ -144,15 +144,16 @@ export function ajaxGetGoodInfo (pms, callback, fail) {
  */
 export function ajaxUpperShelf (pms, callback, fail) {
   let params = {
-    id: pms.id
+    id: pms._id,
+    status: 1
   };
   
-  if (!pms.stock || pms.stock <= 0) {
+  if (!pms.specsStock || pms.specsStock <= 0) {
     $tip({ show: true, text: '商品库存不足，无法上架', theme: 'warning' });
   } else {
     $http({
       method: 'POST',
-      url: URL + '/admin/goods/uppershelf',
+      url: URL + '/admin/product/status',
       body: params
     }).then(function (successData) {
       if (successData.body.code === 200) {
@@ -173,12 +174,13 @@ export function ajaxUpperShelf (pms, callback, fail) {
  */
 export function ajaxLowerShelf (pms, callback, fail) {
   let params = {
-    id: pms.id
+    id: pms._id,
+    status: 2
   };
   
   $http({
     method: 'POST',
-    url: URL + '/admin/goods/lowershelf',
+    url: URL + '/admin/product/status',
     body: params
   }).then(function (successData) {
     if (successData.body.code === 200) {
@@ -198,12 +200,13 @@ export function ajaxLowerShelf (pms, callback, fail) {
  */
 export function ajaxGoodDel (pms, callback, fail) {
   let params = {
-    id: pms.id
+    id: pms._id,
+    status: 3
   };
   
   $http({
     method: 'POST',
-    url: URL + '/admin/goods/delete',
+    url: URL + '/admin/product/status',
     body: params
   }).then(function (successData) {
     if (successData.body.code === 200) {
@@ -229,7 +232,7 @@ export function ajaxGoodRecommend (pms, callback, fail) {
   
   $http({
     method: 'POST',
-    url: URL + '/admin/goods/recommend',
+    url: URL + '/admin/product/recommend',
     body: params
   }).then(function (successData) {
     if (successData.body.code === 200) {

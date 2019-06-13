@@ -19,7 +19,7 @@
             </cmp-input>
           </div>
           <div class="form-layer vcode">
-            <cmp-input v-model="login.vcode" maxlength="6" placeholder="请输入验证码">
+            <cmp-input v-model="login.vcode" maxlength="6" placeholder="请输入验证码" @enter="clkLogin">
               <i class="iconfont iconyanzhengma center-v" slot="left"></i>
             </cmp-input>
             <img class="img center-hv" :src="login.vcodeUrl" @click="getCaptcha(1)"/>
