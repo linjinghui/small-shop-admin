@@ -7,6 +7,8 @@ let $tip = _this.$tip;
 const TIMEOUT = 15000;
 const ERRORSERVICE = '服务异常，请稍后再试！';
 
+$http.options.emulateJSON = true;
+
 $http.interceptors.push(function (request, next) {
   let token = '';
   // 设置超时
@@ -38,6 +40,12 @@ $http.interceptors.push(function (request, next) {
     } else if (response.status === 401) {
       // 身份认证已失效，请重新登录
       $tip({ show: true, text: '身份认证已失效，请重新登录！', theme: 'danger' });
+      setTimeout(function () {
+        window.location.href = location.href.split('/#/')[0] + '/#/';
+      }, 1500);
+    } else if (response.status === 403) {
+      // 身份认证已失效，请重新登录
+      $tip({ show: true, text: '非法请求，请先登录！', theme: 'danger' });
       setTimeout(function () {
         window.location.href = location.href.split('/#/')[0] + '/#/';
       }, 1500);

@@ -10,7 +10,9 @@ export default new Vuex.Store({
 			// 产品banner长度
 			lenBanner: 3,
 			// 产品详情图片长度
-			lenDetailImg: 3
+			lenDetailImg: 3,
+			// 图片大小 500 kb
+			imgSize: 1024 * 500
 		},
 		user: {
 			age: 18

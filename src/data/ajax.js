@@ -40,7 +40,7 @@ export function ajaxLogin (pms, callback, fail) {
       if (successData.body.code === 200) {
         callback && callback(successData.body);
       } else if (fail) {
-        fail(data);
+        fail(successData.body);
       } else {
         $tip({ show: true, text: successData.body.msg, theme: 'danger' });
       }
@@ -78,7 +78,7 @@ export function ajaxRegist (pms, callback, fail) {
       if (successData.body.code === 200) {
         callback && callback(successData.body);
       } else if (fail) {
-        fail(data);
+        fail(successData.body);
       } else {
         $tip({ show: true, text: successData.body.msg, theme: 'danger' });
       }
@@ -100,13 +100,13 @@ export function ajaxGetGoods (pms, callback, fail) {
   
   $http({
     method: 'GET',
-    url: URL + '/admin/goods',
+    url: URL + '/admin/product',
     params: params
   }).then(function (successData) {
     if (successData.body.code === 200) {
       callback && callback(successData.body);
     } else if (fail) {
-      fail(data);
+      fail(successData.body);
     } else {
       $tip({ show: true, text: successData.body.msg, theme: 'danger' });
     }
@@ -120,18 +120,17 @@ export function ajaxGetGoods (pms, callback, fail) {
  */
 export function ajaxGetGoodInfo (pms, callback, fail) {
   let params = {
-    id: pms.id
+    id: pms._id
 	};
   
   $http({
     method: 'GET',
-    url: URL + '/admin/goods/info',
-    params: params
+    url: URL + '/admin/product/' + params.id
   }).then(function (successData) {
     if (successData.body.code === 200) {
       callback && callback(successData.body);
     } else if (fail) {
-      fail(data);
+      fail(successData.body);
     } else {
       $tip({ show: true, text: successData.body.msg, theme: 'danger' });
     }
@@ -159,7 +158,7 @@ export function ajaxUpperShelf (pms, callback, fail) {
       if (successData.body.code === 200) {
         callback && callback(successData.body);
       } else if (fail) {
-        fail(data);
+        fail(successData.body);
       } else {
         $tip({ show: true, text: successData.body.msg, theme: 'danger' });
       }
@@ -185,7 +184,7 @@ export function ajaxLowerShelf (pms, callback, fail) {
     if (successData.body.code === 200) {
       callback && callback(successData.body);
     } else if (fail) {
-      fail(data);
+      fail(successData.body);
     } else {
       $tip({ show: true, text: successData.body.msg, theme: 'danger' });
     }
@@ -210,7 +209,7 @@ export function ajaxGoodDel (pms, callback, fail) {
     if (successData.body.code === 200) {
       callback && callback(successData.body);
     } else if (fail) {
-      fail(data);
+      fail(successData.body);
     } else {
       $tip({ show: true, text: successData.body.msg, theme: 'danger' });
     }
@@ -236,7 +235,7 @@ export function ajaxGoodRecommend (pms, callback, fail) {
     if (successData.body.code === 200) {
       callback && callback(successData.body);
     } else if (fail) {
-      fail(data);
+      fail(successData.body);
     } else {
       $tip({ show: true, text: successData.body.msg, theme: 'danger' });
     }
@@ -249,23 +248,32 @@ export function ajaxGoodRecommend (pms, callback, fail) {
 * @param {string} pms.file - 文件对象
 */
 export function ajaxUploadImg (pms, callback, fail) {
+  let _vue = new Vue();
   let formData = new FormData();
   let config = {
     headers: {
       'Content-Type': 'multipart/form-data'
     }
   };
+  let maxSize = _vue.$store.state.config.imgSize;
 
-  formData.append('datafile', pms.file);
-  $http.post(URL + '/admin/upload/img', formData, config).then(function (successData) {
-    if (successData.body.code === 200) {
-      callback && callback(successData.body);
-    } else if (fail) {
-      fail(data);
-    } else {
-      $tip({ show: true, text: successData.body.msg, theme: 'danger' });
-    }
-  });
+  if (pms.type.indexOf('image') < 0) {
+    $tip({ show: true, text: '请选择图片格式的文件上传', theme: 'danger' });
+  } else if (maxSize && pms.size > maxSize) {
+    $tip({ show: true, text: '图片大小不能超过' + (maxSize / 1024 + 'kb'), theme: 'danger' });
+  } else {
+    formData.append('datafile', pms.file);
+    $http.post(URL + '/admin/upload/img', formData, config).then(function (successData) {
+      if (successData.body.code === 200) {
+        callback && callback(successData.body);
+      } else if (fail) {
+        fail(successData.body);
+      } else {
+        $tip({ show: true, text: successData.body.msg, theme: 'danger' });
+      }
+    });
+  }
+  _vue = null;
 }
 
 /**
@@ -280,13 +288,13 @@ export function ajaxDelImg (pms, callback, fail) {
   
   $http({
     method: 'POST',
-    url: URL + '/admin/file/delete',
+    url: URL + '/admin/upload/delete',
     body: params
   }).then(function (successData) {
     if (successData.body.code === 200) {
       callback && callback(successData.body);
     } else if (fail) {
-      fail(data);
+      fail(successData.body);
     } else {
       $tip({ show: true, text: successData.body.msg, theme: 'danger' });
     }
@@ -300,36 +308,30 @@ export function ajaxDelImg (pms, callback, fail) {
 export function ajaxSaveGood (pms, callback, fail) {
   let params = pms;
 
-  if (!params.covers || params.covers.length === 0) {
+  if (!params.avatar) {
+    $tip({ show: true, text: '请上传商品图片', theme: 'warning' });
+  } else if (!params.cover || params.cover.length === 0) {
     $tip({ show: true, text: '请上传商品轮播图', theme: 'warning' });
-  } else if (!params.desc) {
-    $tip({ show: true, text: '请输入商品描述', theme: 'warning' });
-  } else if (!params.dtlpics || params.dtlpics.length === 0) {
-    $tip({ show: true, text: '请上传商品详情图片', theme: 'warning' });
   } else if (!params.name) {
     $tip({ show: true, text: '请输入商品名称', theme: 'warning' });
-  } else if (!params.pic) {
-    $tip({ show: true, text: '请上传商品图片', theme: 'warning' });
-  } else if (!params.pplace) {
+  } else if (!params.desc) {
+    $tip({ show: true, text: '请输入商品描述', theme: 'warning' });
+  } else if (!params.specs || params.specs.length === 0) {
+    $tip({ show: true, text: '请添加商品规格', theme: 'warning' });
+  } else if (!params.origin_place) {
     $tip({ show: true, text: '请输入商品产地', theme: 'warning' });
-  } else if (!params.price) {
-    $tip({ show: true, text: '请输入商品单价', theme: 'warning' });
-  } else if (!params.rebate) {
-    $tip({ show: true, text: '请输入商品折扣', theme: 'warning' });
-  } else if (!params.stock) {
-    $tip({ show: true, text: '请输入商品库存', theme: 'warning' });
-  } else if (!params.unit) {
-    $tip({ show: true, text: '请输入商品购买单位', theme: 'warning' });
+  } else if (!params.detail || params.detail.length === 0) {
+    $tip({ show: true, text: '请上传商品详情图片', theme: 'warning' });
   } else {
     $http({
       method: 'POST',
-      url: URL + '/admin/goods/save',
+      url: URL + '/admin/product/save',
       body: params
     }).then(function (successData) {
       if (successData.body.code === 200) {
         callback && callback(successData.body);
       } else if (fail) {
-        fail(data);
+        fail(successData.body);
       } else {
         $tip({ show: true, text: successData.body.msg, theme: 'danger' });
       }
@@ -362,7 +364,7 @@ export function ajaxGetOrders (pms, callback, fail) {
     if (successData.body.code === 200) {
       callback && callback(successData.body);
     } else if (fail) {
-      fail(data);
+      fail(successData.body);
     } else {
       $tip({ show: true, text: successData.body.msg, theme: 'danger' });
     }
@@ -387,7 +389,7 @@ export function ajaxGetOrderInfo (pms, callback, fail) {
     if (successData.body.code === 200) {
       callback && callback(successData.body);
     } else if (fail) {
-      fail(data);
+      fail(successData.body);
     } else {
       $tip({ show: true, text: successData.body.msg, theme: 'danger' });
     }

@@ -2,7 +2,7 @@
   <cmp-sidebar v-model="show">
     <template slot="title">
       <div class="avater">
-        <img :src="dataInfo.pic" v-if="dataInfo.pic">
+        <img :src="dataInfo.avatar" v-if="dataInfo.avatar">
         <cmp-button :fileoption="fileOption" @cbk_file="cbkHeaderFile" />
       </div>
       <span>{{dataInfo.name}}</span>
@@ -16,8 +16,8 @@
         <div class="form-layer">
           <label class="star">轮播图:</label>
           <span class="f-dom">
-            <img v-for="(url,index) in dataInfo.covers" :key="'lbt-'+index" :src="url" @click="clkDelCovers(url,index)">
-            <cmp-button theme="line" v-if="!dataInfo.covers||dataInfo.covers.length<config.lenBanner" :fileoption="fileOption" @cbk_file="cbkCovers">+</cmp-button>
+            <img v-for="(url,index) in dataInfo.cover" :key="'lbt-'+index" :src="url" @click="clkDelCovers(url,index)">
+            <cmp-button theme="line" v-if="!dataInfo.cover||dataInfo.cover.length<config.lenBanner" :fileoption="fileOption" @cbk_file="cbkCovers">+</cmp-button>
           </span>
         </div>
         <div class="form-layer">
@@ -28,32 +28,42 @@
           <label class="star">产品描述:</label>
           <cmp-input class="f-dom" maxlength="50" placeholder="请输入产品描述" v-model="dataInfo.desc"></cmp-input>
         </div>
-        <div class="form-layer">
+        <div class="form-layer gug">
+          <label class="star">规格: <i class="cicon-plus-crle-cpt-chr plus" @click="clkAddGg"></i></label>
+          <span class="f-dom" v-for="(info,index) in dataInfo.specs" :key="'cpgg-'+index">
+            <cmp-input class="f-dom" clear="false" maxlength="15" placeholder="规格名称" v-model="info.name"></cmp-input>
+            <cmp-input class="f-dom" clear="false" maxlength="10" rule="float" placeholder="单价，如：10.5" v-model="info.price"></cmp-input>
+            <cmp-input class="f-dom" clear="false" maxlength="5" rule="number" placeholder="库存" v-model="info.stock"></cmp-input>
+            <i class="cicon-sub-crle-cpt-chr sub" @click="clkDelGg(index)"></i>
+          </span>
+        </div>
+
+        <!-- <div class="form-layer">
           <label class="star">产品单位:</label>
           <cmp-input class="f-dom" maxlength="20" placeholder="请输入购买单位，如：1kg-1.5kg/份" v-model="dataInfo.unit"></cmp-input>
-        </div>
-        <div class="form-layer">
+        </div> -->
+        <!-- <div class="form-layer">
           <label class="star">产品单价:</label>
           <cmp-input class="f-dom" maxlength="10" rule="float" placeholder="请输入产品单价，如：10.5" v-model="dataInfo.price"></cmp-input>
-        </div>
+        </div> -->
         <div class="form-layer">
-          <label class="star">产品折扣:</label>
+          <label>产品折扣:</label>
           <cmp-input class="f-dom" maxlength="5" rule="float" placeholder="请输入产品折扣，如：9.5 即表示95折" v-model="dataInfo.rebate"></cmp-input>
         </div>
-        <div class="form-layer">
+        <!-- <div class="form-layer">
           <label class="star">折后价:</label>
           <cmp-input class="f-dom" readonly="true" placeholder="根据单价和折扣自动计算" v-model="dataInfo.rprice"></cmp-input>
-        </div>
-        <div class="form-layer">
+        </div> -->
+        <!-- <div class="form-layer">
           <label class="star">产品库存:</label>
           <cmp-input class="f-dom" maxlength="5" rule="number" placeholder="请输入产品库存" v-model="dataInfo.stock"></cmp-input>
-        </div>
+        </div> -->
         <div class="form-layer">
           <label class="star">产地:</label>
-          <cmp-input class="f-dom" maxlength="10" placeholder="请输入产品源产地" v-model="dataInfo.pplace"></cmp-input>
+          <cmp-input class="f-dom" maxlength="10" placeholder="请输入产品源产地" v-model="dataInfo.origin_place"></cmp-input>
         </div>
         <div class="form-layer">
-          <label class="star">标签:</label>
+          <label>标签:</label>
           <span class="f-dom">
             <cmp-add-label v-model="dataInfo.label" lablength="3" maxlength="4" btnName="添加" :hisrecord="allLables"></cmp-add-label>
           </span>
@@ -61,15 +71,15 @@
         <div class="form-layer">
           <label class="star">产品详情:</label>
           <span class="f-dom">
-            <img v-for="(url,index) in dataInfo.dtlpics" :key="'cpxq-'+index" :src="url" @click="clkDelDtlpics(url,index)">
-            <cmp-button theme="line" v-if="!dataInfo.dtlpics||dataInfo.dtlpics.length<config.lenDetailImg" :fileoption="fileOption" @cbk_file="cbkDtlpics">+</cmp-button>
+            <img v-for="(url,index) in dataInfo.detail" :key="'cpxq-'+index" :src="url" @click="clkDelDtlpics(url,index)">
+            <cmp-button theme="line" v-if="!dataInfo.detail||dataInfo.detail.length<config.lenDetailImg" :fileoption="fileOption" @cbk_file="cbkDtlpics">+</cmp-button>
           </span>
         </div>
       </div>
       <div class="wrap-preview" v-else>
-        <div class="banner" v-if="dataInfo.covers&&dataInfo.covers.length>0">
-          <cmp-banner :nav="dataInfo.covers" navType="point" direction="hor">
-            <img slot="page" class="page" v-for="(url,index) in dataInfo.covers" :key="'pv-lbt-'+index" :src="url">
+        <div class="banner" v-if="dataInfo.cover&&dataInfo.cover.length>0">
+          <cmp-banner :nav="dataInfo.cover" navType="point" direction="hor">
+            <img slot="page" class="page" v-for="(url,index) in dataInfo.cover" :key="'pv-lbt-'+index" :src="url">
           </cmp-banner>
         </div>
         <p class="name" v-if="dataInfo.name">{{dataInfo.name}}</p>
@@ -82,13 +92,13 @@
           <span v-if="dataInfo.unit">
             <i class="iconfont icongouwudai"></i>{{dataInfo.unit}}
           </span>
-          <span v-if="dataInfo.pplace">
-            <i class="iconfont iconshouhuodizhi5"></i>{{dataInfo.pplace}}
+          <span v-if="dataInfo.origin_place">
+            <i class="iconfont iconshouhuodizhi5"></i>{{dataInfo.origin_place}}
           </span>
         </div>
-        <div class="wrap-detail" v-if="dataInfo.dtlpics&&dataInfo.dtlpics.length>0">
+        <div class="wrap-detail" v-if="dataInfo.detail&&dataInfo.detail.length>0">
           <header>商品详情</header>
-          <img v-for="(url,index) in dataInfo.dtlpics" :key="'pv-cpxq-'+index" :src="url">
+          <img v-for="(url,index) in dataInfo.detail" :key="'pv-cpxq-'+index" :src="url">
         </div>
       </div>
     </template>
@@ -148,18 +158,6 @@
       },
       show (val) {
         this.$emit('input', val);
-      },
-      'dataInfo.price': {
-        deep: true,
-        handler: function (val) {
-          this.countRprice();
-        }
-      },
-      'dataInfo.rebate': {
-        deep: true,
-        handler: function (val) {
-          this.countRprice();
-        }
       }
     },
     beforeDestroy () {
@@ -172,19 +170,23 @@
       clkHeader () {
         alert(1);
       },
-      cbkHeaderFile (data) {
-        this.$set(this.dataInfo, 'pic', 'https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/shuijiao.jpg');
+      cbkHeaderFile (files) {
+        let _this = this;
+
+        ajaxUploadImg(files[0], function (data) {
+          _this.$set(_this.dataInfo, 'avatar', data.result);
+        });
       },
       // 上传产品轮播图
       cbkCovers (files) {
         let _this = this;
 
-        if (!_this.dataInfo.covers) {
-          _this.$set(_this.dataInfo, 'covers', []);
+        if (!_this.dataInfo.cover) {
+          _this.$set(_this.dataInfo, 'cover', []);
         }
-        if (_this.dataInfo.covers.length < _this.$store.state.config.lenBanner) {
+        if (_this.dataInfo.cover.length < _this.$store.state.config.lenBanner) {
           ajaxUploadImg(files[0], function (data) {
-            _this.dataInfo.covers.push(data.result);
+            _this.dataInfo.cover.push(data.result);
           });
         } else {
           _this.$tip({ show: true, text: '无法上传更多图片', theme: 'warning' });
@@ -210,9 +212,9 @@
             _this.$confirm({ show: false });
             if (data.text === '确定') {
               ajaxDelImg({url: url}, function () {
-                _this.dataInfo.covers.splice(index, 1);
+                _this.dataInfo.cover.splice(index, 1);
               }, function () {
-                _this.dataInfo.covers.splice(index, 1);
+                _this.dataInfo.cover.splice(index, 1);
               });
             }
           }
@@ -222,12 +224,12 @@
       cbkDtlpics (files) {
         let _this = this;
 
-        if (!_this.dataInfo.dtlpics) {
-          _this.$set(_this.dataInfo, 'dtlpics', []);
+        if (!_this.dataInfo.detail) {
+          _this.$set(_this.dataInfo, 'detail', []);
         }
-        if (_this.dataInfo.dtlpics.length < _this.$store.state.config.lenDetailImg) {
+        if (_this.dataInfo.detail.length < _this.$store.state.config.lenDetailImg) {
           ajaxUploadImg(files[0], function (data) {
-            _this.dataInfo.dtlpics.push(data.result);
+            _this.dataInfo.detail.push(data.result);
           });
         } else {
           _this.$tip({ show: true, text: '无法上传更多图片', theme: 'warning' });
@@ -253,13 +255,21 @@
             _this.$confirm({ show: false });
             if (data.text === '确定') {
               ajaxDelImg({url: url}, function () {
-                _this.dataInfo.dtlpics.splice(index, 1);
+                _this.dataInfo.detail.splice(index, 1);
               }, function () {
-                _this.dataInfo.dtlpics.splice(index, 1);
+                _this.dataInfo.detail.splice(index, 1);
               });
             }
           }
         });
+      },
+      // 添加新的规格
+      clkAddGg () {
+        this.dataInfo.specs.push({});
+      },
+      // 删除规格
+      clkDelGg (index) {
+        this.dataInfo.specs.splice(index, 1);
       },
       clkSave () {
         let _this = this;
@@ -270,18 +280,6 @@
           _this.$tip({ show: true, text: '商品信息保存成功', theme: 'success' });
           _this.show = false;
         });
-      },
-      // 计算折后价格
-      countRprice () {
-        let rprice = '';
-
-        try {
-          rprice = this.dataInfo.rebate / 10 * this.dataInfo.price;
-          rprice = rprice.toFixed(2);
-        } catch (error) {
-          // alert(rprice);
-        }
-        this.$set(this.dataInfo, 'rprice', isNaN(rprice) ? '' : rprice);
       }
     }
   };
@@ -434,6 +432,48 @@
 
           
 
+          
+        }
+
+        > .form-layer.gug {
+          
+          .plus, .sub {
+            margin-top: -3px;
+            font-size: 18px;
+            color: #fff;
+            background-color: $theme;
+          }
+          
+          > .f-dom {
+            display: flex;
+            flex-shrink: 0;
+
+            .input {
+              flex: 1;
+              margin-right: 1px;
+              width: 0;
+              vertical-align: middle;
+              border-right: solid 1px #f4f6f8;
+              > input {
+                padding: 0;
+                text-align: center;
+              }
+            }
+            .input:nth-of-type(1) {
+              flex: 2;
+            }
+            .input:nth-of-type(2) {
+              flex: 2;
+            }
+            .input:nth-of-type(3) {
+              flex: 1;
+              border-right: 0;
+            }
+            .sub {
+              margin-left: 5px;
+              margin-top: 7px;
+            }
+          }
           
         }
       }

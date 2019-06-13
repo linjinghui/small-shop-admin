@@ -217,6 +217,10 @@
       >label {
         line-height: 30px;
       }
+      >label.star:before {
+        content: '*';
+        color: red;
+      }
 
       >.f-dom {
         display: inline-block;

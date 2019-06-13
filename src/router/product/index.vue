@@ -12,20 +12,22 @@
       <cmp-table v-bind="option" ref="rtable" @callback="callback">
         <tr slot="head">
           <td @click="clkOrder('name')">商品</td>
-          <td @click="clkOrder('unit')">购买单位</td>
-          <td @click="clkOrder('price')">单价</td>
+          <td @click="clkOrder('specsName')">规格</td>
+          <td @click="clkOrder('specsPrice')">单价</td>
+          <td @click="clkOrder('specsStock')">库存</td>
           <td @click="clkOrder('rebate')">折扣</td>
-          <td @click="clkOrder('stock')">库存</td>
-          <td @click="clkOrder('pplace')">产地</td>
+          <td @click="clkOrder('origin_place')">产地</td>
+          <td @click="clkOrder('create_time')">添加时间</td>
           <td @click="clkOrder('status')">操作</td>
         </tr>
         <tr slot="body" slot-scope="props">
-          <td><img class="pic" :src="props.item.pic">{{props.item.name}}</td>
-          <td>{{props.item.unit}}</td>
-          <td>{{props.item.price}}</td>
+          <td><img class="pic" :src="props.item.avatar">{{props.item.name}}</td>
+          <td>{{props.item.specsName}}</td>
+          <td>{{props.item.specsPrice}}</td>
+          <td :style="'color:'+(!props.item.specsStock?'#f56c6c':props.item.specsStock<=10?'#e6a23c':'')+''">{{props.item.specsStock||0}}</td>
           <td>{{props.item.rebate}}</td>
-          <td :style="'color:'+(!props.item.stock?'#f56c6c':props.item.stock<=10?'#e6a23c':'')+''">{{props.item.stock||0}}</td>
-          <td>{{props.item.pplace}}</td>
+          <td>{{props.item.origin_place}}</td>
+          <td>{{utlDateStr(props.item.create_time)}}</td>
           <td>
             <cmp-button theme="line" @click="clkMd(props.item)">修改</cmp-button>
             <cmp-button v-if="props.item.status===2" @click="clkSj(props.item)">上架</cmp-button>
@@ -44,6 +46,7 @@
 
 <script>
   import {Table, Button, Pagebarpagesize} from 'web-base-ui';
+  import {dataFormat} from 'web-js-tool';
   import Info from './info.vue';
   import {ajaxGetGoods, ajaxGetGoodInfo, ajaxUpperShelf, ajaxLowerShelf, ajaxGoodDel, ajaxGoodRecommend} from '~root/data/ajax.js';
   
@@ -103,14 +106,17 @@
         this.$refs.rtable.setOrder(this.option.data, orderBy);
       },
       clkNew () {
-        this.$set(this.optionInfo, 'data', {});
+        // 默认折扣，默认规格
+        this.$set(this.optionInfo, 'data', {rebate: 10, specs: [{}]});
         this.$set(this.optionInfo, 'show', true);
       },
       clkMd (info) {
         let _this = this;
 
         ajaxGetGoodInfo(info, function (data) {
-          _this.$set(_this.optionInfo, 'data', JSON.parse(JSON.stringify(data.result)));
+          data = data.result;
+          data.label = data.label || [];
+          _this.$set(_this.optionInfo, 'data', JSON.parse(JSON.stringify(data)));
           _this.$set(_this.optionInfo, 'show', true);
         });
       }, 
@@ -198,13 +204,23 @@
         let _this = this;
 
         ajaxGetGoods({name: _this.keyworld, page: _this.pboption.index, size: _this.pboption.pagesize}, function (data) {
-          _this.$set(_this.option, 'data', data.result);
-          _this.$set(_this.pboption, 'totalSize', data.total);
+          let arr = data.result.list;
+
+          for (let i = 0;i < arr.length;i++) {
+            arr[i].specsName = arr[i].specs[0].name;
+            arr[i].specsPrice = arr[i].specs[0].price;
+            arr[i].specsStock = arr[i].specs[0].stock;
+          }
+          _this.$set(_this.option, 'data', arr);
+          _this.$set(_this.pboption, 'totalSize', data.result.total);
           // _this.$set(_this.pboption, 'totalPage', parseInt((data.total - 1) / _this.pboption.pagesize) + 1);
         });
       },
       cbkInfo (data) {
         this.getDataList();
+      },
+      utlDateStr (data) {
+        return dataFormat(new Date(data), 'yyyy-MM-dd hh:mm');
       }
     }
   };
@@ -232,9 +248,9 @@
     .wrap-table {
       height: calc(100% - 50px);
 
-      td:nth-of-type(4),
-      td:nth-of-type(5) {
-        width: 8%;
+      // td:nth-of-type(1),
+      td:nth-of-type(1) {
+        width: 20%;
       }
     }
 
