@@ -81,7 +81,8 @@
       return {
         nav: {
           active: '',
-          data: ['登录', '注册']
+          data: ['登录']
+          // data: ['登录', '注册']
         },
         showHelp: false,
         login: {
