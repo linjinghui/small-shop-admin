@@ -152,6 +152,9 @@
     watch: {
       value (val) {
         this.show = val;
+        if (val) {
+          this.active = 0;
+        }
       },
       data (val) {
         this.dataInfo = val;
@@ -484,7 +487,7 @@
 
         > .banner {
           margin-bottom: 5px;
-          height: 300px;
+          height: 400px;
         }
 
         > .name,
@@ -547,7 +550,7 @@
 
           > img {
             display: block;
-            margin-bottom: 5px;
+            // margin-bottom: 5px;
             width: 100%;
           }
         }

@@ -121,6 +121,9 @@
 
         ajaxLogin(this.login, res => {
           _this.$root.toPage('', 1);
+        }, res => {
+          _this.$tip({ show: true, text: res.msg, theme: 'danger' });
+          (res.code === 400) && _this.getCaptcha(1);
         });
       },
       clkRegist: function () {
@@ -274,7 +277,7 @@
           > .img {
             left: inherit;
             width: 100px;
-            height: 24px;
+            height: 32px;
             cursor: pointer;
           }
         }
