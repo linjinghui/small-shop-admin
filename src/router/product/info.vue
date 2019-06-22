@@ -181,15 +181,19 @@
         });
       },
       // 上传产品轮播图
-      cbkCovers (files) {
+      cbkCovers (files, index) {
         let _this = this;
 
         if (!_this.dataInfo.cover) {
           _this.$set(_this.dataInfo, 'cover', []);
         }
-        if (_this.dataInfo.cover.length < _this.$store.state.config.lenBanner) {
+        if (index >= 0 || _this.dataInfo.cover.length < _this.$store.state.config.lenBanner) {
           ajaxUploadImg(files[0], function (data) {
-            _this.dataInfo.cover.push(data.result);
+            if (typeof index === 'undefined') {
+              _this.dataInfo.cover.push(data.result);
+            } else {
+              _this.dataInfo.cover.splice(index, 1, data.result);
+            }
           });
         } else {
           _this.$tip({ show: true, text: '无法上传更多图片', theme: 'warning' });
@@ -203,36 +207,42 @@
           show: true,
           modal: true,
           heading: '提示',
-          content: ' 确定删除该图片？',
+          content: '您需要删除还是替换该图片？',
           type: 'warning',
           stl: {
             header: {'text-align': 'center'},
             section: {'text-align': 'center'},
             footer: {'text-align': 'center'}
           },
-          buttons: [{text: '取消', theme: 'line'}, {text: '确定', theme: '#2b8aff'}],
+          buttons: [{text: '替换', theme: '#2b8aff', fileoption: this.fileOption}, {text: '删除', theme: 'danger'}],
           callback: function (data) {
             _this.$confirm({ show: false });
-            if (data.text === '确定') {
+            if (data.text === '删除') {
               ajaxDelImg({url: url}, function () {
                 _this.dataInfo.cover.splice(index, 1);
               }, function () {
                 _this.dataInfo.cover.splice(index, 1);
               });
+            } else if (data.text === '替换') {
+              _this.cbkCovers(data.files, index);
             }
           }
         });
       },
       // 上传产品详情图片
-      cbkDtlpics (files) {
+      cbkDtlpics (files, index) {
         let _this = this;
 
         if (!_this.dataInfo.detail) {
           _this.$set(_this.dataInfo, 'detail', []);
         }
-        if (_this.dataInfo.detail.length < _this.$store.state.config.lenDetailImg) {
+        if (index >= 0 || _this.dataInfo.detail.length < _this.$store.state.config.lenDetailImg) {
           ajaxUploadImg(files[0], function (data) {
-            _this.dataInfo.detail.push(data.result);
+            if (typeof index === 'undefined') {
+              _this.dataInfo.detail.push(data.result);
+            } else {
+              _this.dataInfo.detail.splice(index, 1, data.result);
+            }
           });
         } else {
           _this.$tip({ show: true, text: '无法上传更多图片', theme: 'warning' });
@@ -246,22 +256,24 @@
           show: true,
           modal: true,
           heading: '提示',
-          content: ' 确定删除该图片？',
+          content: '您需要删除还是替换该图片？',
           type: 'warning',
           stl: {
             header: {'text-align': 'center'},
             section: {'text-align': 'center'},
             footer: {'text-align': 'center'}
           },
-          buttons: [{text: '取消', theme: 'line'}, {text: '确定', theme: '#2b8aff'}],
+          buttons: [{text: '替换', theme: '#2b8aff', fileoption: this.fileOption}, {text: '删除', theme: 'danger'}],
           callback: function (data) {
             _this.$confirm({ show: false });
-            if (data.text === '确定') {
+            if (data.text === '删除') {
               ajaxDelImg({url: url}, function () {
                 _this.dataInfo.detail.splice(index, 1);
               }, function () {
                 _this.dataInfo.detail.splice(index, 1);
               });
+            } else if (data.text === '替换') {
+              _this.cbkDtlpics(data.files, index);
             }
           }
         });
