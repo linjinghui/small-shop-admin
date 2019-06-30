@@ -54,6 +54,7 @@
     },
     methods: {
       clkNav (index) {
+        this.search = '';
         this.$set(this.nav, 'index', index);
         this.$root.toPage('', this.nav.data[index].urlType);
       },

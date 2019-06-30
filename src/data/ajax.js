@@ -357,11 +357,22 @@ export function ajaxGetOrders (pms, callback, fail) {
 		page: pms.page || 1,
 		size: pms.size || 10
   };
+
+  if (params.startTime) {
+    params.startTime += ' 00:00:00';
+    params.startTime = params.startTime.replace(/-/g, '/');
+    params.startTime = new Date(params.startTime).getTime();
+  }
+  if (params.endTime) {
+    params.endTime += ' 23:59:59';
+    params.endTime = params.endTime.replace(/-/g, '/');
+    params.endTime = new Date(params.endTime).getTime();
+  }
   console.log(params);
   
   $http({
     method: 'GET',
-    url: URL + '/admin/orders',
+    url: URL + '/admin/order',
     params: params
   }).then(function (successData) {
     if (successData.body.code === 200) {
@@ -381,13 +392,66 @@ export function ajaxGetOrders (pms, callback, fail) {
  */
 export function ajaxGetOrderInfo (pms, callback, fail) {
   let params = {
-    id: pms.id || ''
+    id: pms._id || ''
   };
   
   $http({
     method: 'GET',
-    url: URL + '/admin/orders/info',
+    url: URL + '/admin/order/' + params.id,
     params: params
+  }).then(function (successData) {
+    if (successData.body.code === 200) {
+      callback && callback(successData.body);
+    } else if (fail) {
+      fail(successData.body);
+    } else {
+      $tip({ show: true, text: successData.body.msg, theme: 'danger' });
+    }
+  });
+}
+
+/**
+ * 更新订单商品价格
+ * @param {function} callback - 回调函数 
+ */
+export function ajaxUpdateOrderSpecs (pms, callback, fail) {
+  let params = {
+    _id: pms._id || '',
+    order_id: pms.order_id || '',
+    weight: pms.weight || '',
+    money: pms.money || ''
+  };
+  
+  $http({
+    method: 'POST',
+    url: URL + '/admin/order/update',
+    body: params,
+    emulateJSON: true
+  }).then(function (successData) {
+    if (successData.body.code === 200) {
+      callback && callback(successData.body);
+    } else if (fail) {
+      fail(successData.body);
+    } else {
+      $tip({ show: true, text: successData.body.msg, theme: 'danger' });
+    }
+  });
+}
+
+/**
+ * 确认订单
+ * @param {function} callback - 回调函数 
+ */
+export function ajaxConfirmOrder (pms, callback, fail) {
+  let params = {
+    _id: pms._id || ''
+  };
+  
+  $http({
+    method: 'POST',
+    url: URL + '/admin/order/confirm',
+    body: params,
+    emulateJSON: true
   }).then(function (successData) {
     if (successData.body.code === 200) {
       callback && callback(successData.body);
