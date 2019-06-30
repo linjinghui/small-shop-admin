@@ -126,6 +126,10 @@
               // 订单管理
               path = '/#/home/order';
               break;
+            case 4:
+              // 备货区
+              path = '/#/home/reservearea';
+              break;
             default:
               path = '/#/home';
           }

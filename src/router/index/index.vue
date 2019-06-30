@@ -42,7 +42,7 @@
           data: [
             {name: '产品库管理', icon: 'iconchanpinguanli1', urlType: 2},
             {name: '订单管理', icon: 'icondingdan', urlType: 3},
-            {name: '备货区', icon: 'iconRectangleCopy'},
+            {name: '备货区', icon: 'iconRectangleCopy', urlType: 4},
             {name: '送货区', icon: 'iconsonghuo'}
           ]
         }
