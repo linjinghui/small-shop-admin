@@ -11,26 +11,30 @@
           <td class="no-order">状态</td>
           <td class="no-order">下单时间</td>
           <td class="no-order">备注</td>
+          <td>操作</td>
         </tr>
-        <tr slot="body" slot-scope="props" :class="{'active':option.activeId===props.item._id}" @click="clkItem(props.item)">
+        <tr slot="body" slot-scope="props" :class="{'active':option.activeId===props.item._id}">
           <td><cmp-checkbox v-model="props.item.checked" @click="clkCheck(props.item)">{{props.item._id}}</cmp-checkbox></td>
           <td>{{props.item.count}}</td>
           <td>{{props.item.status===2?'待备货':props.item.status===3?'备货中':'-'}}</td>
           <td>{{utlDateStr(props.item.time)}}</td>
           <td>{{props.item.remark || '-'}}</td>
+          <td>
+            <cmp-button v-if="props.item.status===3" theme="success" @click="clkBhwc(props.item)">备货完成</cmp-button>
+          </td>
         </tr>
       </cmp-table>
       <cmp-pagebar v-bind="pboption" v-model="pboption.index" @callback="cbkPagebar"></cmp-pagebar>
     </div>
     <div class="wrap right">
-      <div class="wrap-empty center-hv" v-if="chooseData.length===0"><i class="iconfont iconwushuju"></i>请从左侧选择订单~</div>
-      <section id="prtzoom" v-if="chooseData.length>0">
+      <div class="wrap-empty center-hv" v-if="chooseSpecs.length===0"><i class="iconfont iconwushuju"></i>请从左侧选择订单~</div>
+      <section id="prtzoom" v-if="chooseSpecs.length>0">
         <p style="padding:20px 0;text-align:center;font-size:20px;">备货单</p>
         <table style="width:100%;text-align:center;">
           <tr style="height:40px;border-bottom:solid 1px #ddd;">
             <td>序号</td><td>商品</td><td>名称</td><td>规格</td><td>数量</td>
           </tr>
-          <tr style="height:50px;border-bottom:solid 1px #ddd;" v-for="(item,index) in chooseData" :key="item">
+          <tr style="height:50px;border-bottom:solid 1px #ddd;" v-for="(item,index) in chooseSpecs" :key="item">
             <td>{{index+1}}</td>
             <td>
               <img width="34px" :src="item.avatar">
@@ -41,8 +45,9 @@
           </tr>
         </table>
       </section>
-      <footer v-if="chooseData.length>0">
-        <cmp-button prnt="#prtzoom" @click="clkBh">备货</cmp-button>
+      <footer v-if="chooseSpecs.length>0">
+        <cmp-button v-if="showBtnBh" prnt="#prtzoom" @click="clkBh">备货</cmp-button>
+        <cmp-button v-if="showBtnBhwc" theme="success" @click="clkBhwc">备货完成</cmp-button>
       </footer>
     </div>
   </div>
@@ -51,7 +56,7 @@
 <script>
   import {Table, Button, Checkbox, Pagebarpagesize} from 'web-base-ui';
   import {dataFormat} from 'web-js-tool';
-  import {ajaxGetReserveOrders} from '~root/data/ajax.js';
+  import {ajaxGetReserveOrders, ajaxSetOrderRersevering, ajaxSetOrderRersevered} from '~root/data/ajax.js';
   
   export default {
     name: 'Reservearea',
@@ -86,7 +91,21 @@
       };
     },
     computed: {
-      chooseData () {
+      // 选中的订单
+      chooseOrder () {
+        let _arr = [];
+        let arr = this.option.data;
+
+        arr.forEach(item => {
+          if (item.checked) {
+            _arr.push(item);
+          }
+        });
+        
+        return _arr;
+      },
+      // 选中的订单规格统计
+      chooseSpecs () {
         let _arr = [];
         let obj = {};
         let arr = this.option.data;
@@ -111,8 +130,19 @@
         for (const key in obj) {
           _arr.push(obj[key]);
         }
-        console.log(_arr);
         return _arr;
+      },
+      // 计算是否显示备货按钮
+      showBtnBh () {
+        let mth = JSON.stringify(this.chooseOrder).match(/"status":2/g);
+
+        return mth && (mth.length === this.chooseOrder.length);
+      },
+      // 计算是否显示备货完成按钮
+      showBtnBhwc () {
+        let mth = JSON.stringify(this.chooseOrder).match(/"status":3/g);
+
+        return mth && (mth.length === this.chooseOrder.length);
       }
     },
     watch: {},
@@ -143,7 +173,43 @@
         this.getDataList();
       },
       clkBh () {
-        alert(1);
+        let _this = this;
+        let arr = [];
+        let indexarr = [];
+
+        this.option.data.forEach((item, index) => {
+          if (item.checked) {
+            arr.push(item._id);
+            indexarr.push(index);
+          }
+        });
+        // 设置状态为备货中
+        ajaxSetOrderRersevering(arr, ret => {
+          indexarr.forEach(item => {
+            _this.$set(_this.option.data[item], 'status', 3);
+          });
+        });
+      },
+      clkBhwc (data) {
+        let _this = this;
+        let arr = [];
+        let indexarr = [];
+
+        if (data) {
+          arr.push(data._id);
+        } else {
+          this.option.data.forEach((item, index) => {
+            if (item.checked) {
+              arr.push(item._id);
+              indexarr.push(index);
+            }
+          });
+        }
+        // 设置状态为备货完成
+        ajaxSetOrderRersevered(arr, ret => {
+          _this.getDataList();
+          _this.selectFull = false;
+        });
       },
       getDataList () {
         let _this = this;

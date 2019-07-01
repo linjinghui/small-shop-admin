@@ -412,6 +412,55 @@ export function ajaxGetReserveOrders (pms, callback, fail) {
   });
 }
 
+/**
+ * 设置订单状态为备货中
+ * @param {function} callback - 回调函数 
+ */
+export function ajaxSetOrderRersevering (order_ids, callback, fail) {
+  let params = {
+    order_ids: order_ids || ''
+  };
+  
+  $http({
+    method: 'POST',
+    url: URL + '/admin/order/setRersevering',
+    body: params,
+    emulateJSON: true
+  }).then(function (successData) {
+    if (successData.body.code === 200) {
+      callback && callback(successData.body);
+    } else if (fail) {
+      fail(successData.body);
+    } else {
+      $tip({ show: true, text: successData.body.msg, theme: 'danger' });
+    }
+  });
+}
+
+/**
+ * 设置订单状态为备货完成
+ * @param {function} callback - 回调函数 
+ */
+export function ajaxSetOrderRersevered (order_ids, callback, fail) {
+  let params = {
+    order_ids: order_ids || ''
+  };
+  
+  $http({
+    method: 'POST',
+    url: URL + '/admin/order/setRersevered',
+    body: params,
+    emulateJSON: true
+  }).then(function (successData) {
+    if (successData.body.code === 200) {
+      callback && callback(successData.body);
+    } else if (fail) {
+      fail(successData.body);
+    } else {
+      $tip({ show: true, text: successData.body.msg, theme: 'danger' });
+    }
+  });
+}
 
 /**
  * 获取订单详情
