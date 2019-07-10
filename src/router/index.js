@@ -7,6 +7,8 @@ const Product = () => import('./product/index.vue');
 const Order = () => import('./order/index.vue');
 const Reservearea = () => import('./reservearea/index.vue');
 
+const Weight = () => import('./weight/index.vue');
+
 Vue.use(Router);
 
 export default new Router({
@@ -42,6 +44,11 @@ export default new Router({
         }
         
       ]
+    },
+    {
+      path: '/weight',
+      name: 'weight',
+      component: Weight,
     }
   ]
 });
