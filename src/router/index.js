@@ -8,6 +8,7 @@ const Order = () => import('./order/index.vue');
 const Reservearea = () => import('./reservearea/index.vue');
 
 const Weight = () => import('./weight/index.vue');
+const OrderWeight = () => import('./weight/order_index.vue');
 
 Vue.use(Router);
 
@@ -49,6 +50,11 @@ export default new Router({
       path: '/weight',
       name: 'weight',
       component: Weight,
+    },
+    {
+      path: '/oweight',
+      name: 'oweight',
+      component: OrderWeight,
     }
   ]
 });
