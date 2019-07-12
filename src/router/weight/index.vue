@@ -8,9 +8,9 @@
     </header>
     <section>
       <ul>
-        <li v-for="(item,index) in 30" :key="item" :style="{'height':liHeight+'px'}" :class="{'active':active===index}" @click="active=index">
-          <img src="https://hcbeng.com/api/public/uploads/23bc-a998-ae6a.jpg">
-          <p class="center-hv">比目鱼</p>
+        <li v-for="(item,index) in goods" :key="item" :style="{'height':liHeight+'px'}" :class="{'active':active===index}" @click="clkGoodItem(index)">
+          <img :src="item.avatar">
+          <p class="center-hv">{{item.name}}|{{item.specsInfo.name}}</p>
         </li>
       </ul>
     </section>
@@ -19,6 +19,8 @@
 
 <script>
   import {Button, Input} from 'web-base-ui';
+  import {dataFormat} from 'web-js-tool';
+  import {ajaxGetGoods} from '~root/data/ajax.js';
   
   export default {
     name: 'Weight',
@@ -31,7 +33,8 @@
         active: '',
         weight_pz: '00.000',
         weight: '00.000',
-        weight_dl: '00.000'
+        weight_dl: '00.000',
+        goods: []
       };
     },
     computed: {
@@ -40,34 +43,68 @@
       }
     },
     watch: {
-      weight () {
-        this.weight_dl = '00.000';
+      weight (val) {
+        if (isNaN(val)) {
+          this.weight = '00.000';
+        }
+      },
+      weight_dl (val) {
+        if (isNaN(val)) {
+          this.weight_dl = '00.000';
+        }
       }
-      // weight_dl () {
-      //   this.weight = '00.000';
-      // }
     },
     beforeDestroy () {
       // 
     },
     mounted () {
-      // 
+      this.getDataList();
     },
     methods: {
+      // 点击产品调出称重器
+      clkGoodItem (index) {
+        this.active = index;
+        let weight = window.external.getWeight('R0001').toString();
+
+        if (weight) {
+          this.weight = weight;
+        }
+      },
       clkDybq () {
         let weight = parseFloat(this.weight);
         let weightDl = parseFloat(this.weight_dl);
-
-        // alert(this.weight + ':' + weight + ';' + this.weight_dl + ';' + weightDl);
+        
         if (this.active === '') {
           this.$tip({ show: true, text: '请选择需要称重的产品', theme: 'warning' });
         } else if (weight === 0 && weightDl === 0) {
           this.$tip({ show: true, text: '请把实物放入称重, 或者使用定量称重', theme: 'warning' });
-        } else if (weight) {
-          this.$tip({ show: true, text: '实称标签打印', theme: 'success' });
-        } else if (weightDl) {
-          this.$tip({ show: true, text: '定量标签打印', theme: 'success' });
+        } else {
+          let opName = '邹向煌';
+          let good = this.goods[this.active];
+          let jsonData = '{&quot;PM&quot;:&quot;' + good.name + '&quot;,&quot;GG&quot;:&quot;' + good.specsInfo.name + '&quot;,&quot;ZL&quot;:&quot;' + (weightDl || weight) + '&quot;,&quot;CZY&quot;:&quot;' + opName + '&quot;,&quot;SJ&quot;:&quot;' + (dataFormat(new Date(), 'yyyy-MM-dd hh:mm')) + '&quot;}';
+
+          console.log(jsonData);
+          window.external.printLable('lable.report', '1', jsonData);
         }
+        
+      },
+      getDataList () {
+        let _this = this;
+
+        ajaxGetGoods({name: '', page: 1, size: 1000}, function (data) {
+          let arr = data.result.list;
+          let _arr = [];
+
+          for (let i = 0;i < arr.length;i++) {
+            let info = arr[i];
+            
+            info.specs.forEach(item => {
+              info.specsInfo = item;
+              _arr.push(info);
+            });
+          }
+          _this.goods = _arr;
+        });
       }
     }
   };
@@ -128,7 +165,7 @@
     > section {
       height: calc(100% - 100px);
       overflow-y: auto;
-      background-color: antiquewhite;
+      user-select: none;
 
       li {
         position: relative;
