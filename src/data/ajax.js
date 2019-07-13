@@ -12,6 +12,24 @@ const URL = '/api';
 export function ajaxGetCaptcha (type) {
   return URL + '/captcha?type=' + type + '&t=' + new Date().getTime();
 }
+/**
+ * 获取图形验证码
+ * @param {function} callback - 回调函数 
+ */
+export function ajaxGetCaptchaBya (type, callback) {
+  let params = {
+    type: type || '',
+    t: new Date().getTime()
+  };
+
+  $http({
+    method: 'GET',
+    url: URL + '/captcha',
+    params: params
+  }).then(function (successData) {
+    callback && callback(successData.body);
+  });
+}
 
 /**
  * 登录

@@ -164,8 +164,8 @@
     position: relative;
     width: 100%;
     height: 100%;
-    min-width: 1350px;
-    min-height: 630px;
+    /* min-width: 1350px;
+    min-height: 630px; */
     overflow: auto;
     background-color: #fff;
     --theme: #0079ff;

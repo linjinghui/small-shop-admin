@@ -14,13 +14,14 @@
         </li>
       </ul>
     </section>
+    <cmp-button class="btn-back" @click="clkBack">返回</cmp-button>
   </div>
 </template>
 
 <script>
   import {Button, Input} from 'web-base-ui';
   import {dataFormat} from 'web-js-tool';
-  import {ajaxGetGoods} from '~root/data/ajax.js';
+  import {ajaxGetGoods, ajaxLogin, ajaxGetCaptchaBya} from '~root/data/ajax.js';
   
   export default {
     name: 'Weight',
@@ -30,6 +31,11 @@
     },
     data () {
       return {
+        login: {
+          account: 'kyhx',
+          pwd: '888888',
+          vcode: 'loginweight'
+        },
         active: '',
         weight_pz: '00.000',
         weight: '00.000',
@@ -58,7 +64,7 @@
       // 
     },
     mounted () {
-      this.getDataList();
+      this.clkLogin();
     },
     methods: {
       // 点击产品调出称重器
@@ -67,7 +73,8 @@
         let weight = window.external.getWeight('R0001').toString();
 
         if (weight) {
-          this.weight = weight;
+          weight = JSON.parse(weight);
+          this.weight = weight[1].weight;
         }
       },
       clkDybq () {
@@ -79,12 +86,16 @@
         } else if (weight === 0 && weightDl === 0) {
           this.$tip({ show: true, text: '请把实物放入称重, 或者使用定量称重', theme: 'warning' });
         } else {
-          let opName = '邹向煌';
+          let opName = '快鱼活鲜';
           let good = this.goods[this.active];
-          let jsonData = '{&quot;PM&quot;:&quot;' + good.name + '&quot;,&quot;GG&quot;:&quot;' + good.specsInfo.name + '&quot;,&quot;ZL&quot;:&quot;' + (weightDl || weight) + '&quot;,&quot;CZY&quot;:&quot;' + opName + '&quot;,&quot;SJ&quot;:&quot;' + (dataFormat(new Date(), 'yyyy-MM-dd hh:mm')) + '&quot;}';
-
-          console.log(jsonData);
-          window.external.printLable('lable.report', '1', jsonData);
+          let jsonData = {
+            PM: good.name, 
+            GG: good.specsInfo.name, 
+            ZL: (weightDl || weight) + '',
+            CZY: opName,
+            SJ: dataFormat(new Date(), 'yyyy-MM-dd hh:mm')
+          };
+          window.external.printLable('lable.report', '1', JSON.stringify(jsonData));
         }
         
       },
@@ -105,6 +116,22 @@
           }
           _this.goods = _arr;
         });
+      },
+      clkLogin () {
+        let _this = this;
+
+        ajaxGetCaptchaBya(1, () => {
+
+          ajaxLogin(this.login, res => {
+            _this.getDataList();
+          }, res => {
+            _this.$tip({ show: true, text: res.msg, theme: 'danger' });
+          });
+
+        });
+      },
+      clkBack () {
+        window.external.closeWindow();
       }
     }
   };
@@ -153,7 +180,7 @@
         }
         > .input {
           height: 60px;
-          font-size: 60px;
+          font-size: 50px;
         }
       }
       > .button {
@@ -201,6 +228,12 @@
       //   height: 100%;
       //   background-color: rgba(0, 0, 0, 0.3);
       // }
+    }
+    > .btn-back {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 100px;
     }
   }
 </style>
