@@ -159,14 +159,19 @@
             M: m
           };
 
-          window.external.printPOS('pos.report', '1', JSON.stringify(jsonData));
+
+          console.log(JSON.stringify(jsonData));
+          let ptresult = window.external.printPOS('pos.report', '1', JSON.stringify(jsonData));
+
           // 改变订单状态为待发货
-          ajaxSetOrderWaitfordelivery([arr[0].order_id], ret => {
-            _this.active = '';
-            _this.option.data = [];
-            _this.consignees = [];
-            _this.getDataList();
-          });
+          if (ptresult) {
+            ajaxSetOrderWaitfordelivery([arr[0].order_id], ret => {
+              _this.active = '';
+              _this.option.data = [];
+              _this.consignees = [];
+              _this.getDataList();
+            });
+          }
         } else if (!arr || arr.length === 0) {
           this.$tip({ show: true, text: '请先从左侧选择订单', theme: 'warning' });
         } else {

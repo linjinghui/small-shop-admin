@@ -113,7 +113,8 @@ export function ajaxGetGoods (pms, callback, fail) {
   let params = {
     name: pms.name || '',
 		page: pms.page || 1,
-		size: pms.size || 10
+    size: pms.size || 10,
+    t: new Date().getTime()
 	};
   
   $http({
@@ -373,7 +374,8 @@ export function ajaxGetOrders (pms, callback, fail) {
     startTime: pms.startTime || '',
     endTime: pms.endTime || '',
 		page: pms.page || 1,
-		size: pms.size || 10
+    size: pms.size || 10,
+    t: new Date().getTime()
   };
 
   if (params.startTime) {
@@ -487,7 +489,8 @@ export function ajaxSetOrderRersevered (order_ids, callback, fail) {
  */
 export function ajaxGetOrderInfo (pms, callback, fail) {
   let params = {
-    id: pms._id || ''
+    id: pms._id || '',
+    t: new Date().getTime()
   };
   
   $http({
