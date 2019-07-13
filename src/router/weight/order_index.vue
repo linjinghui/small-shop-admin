@@ -34,7 +34,7 @@
 <script>
   import {Button, Table, Input} from 'web-base-ui';
   import {dataFormat} from 'web-js-tool';
-  import {ajaxGetOrders, ajaxGetOrderInfo, ajaxUpdateOrderSpecs, ajaxSetOrderWaitfordelivery} from '~root/data/ajax.js';
+  import {ajaxGetOrders, ajaxGetOrderInfo, ajaxUpdateOrderSpecs, ajaxSetOrderWaitfordelivery, ajaxGetCaptchaBya, ajaxLogin} from '~root/data/ajax.js';
   
   export default {
     name: 'OrderWeight',
@@ -46,6 +46,11 @@
     data () {
       return {
         active: '',
+        login: {
+          account: 'kyhx',
+          pwd: '888888',
+          vcode: 'loginweight'
+        },
         orderList: [],
         // 配送信息
         consignees: {},
@@ -64,7 +69,7 @@
       // 
     },
     mounted () {
-      this.getDataList();
+      this.clkLogin();
     },
     methods: {
       clkOrderItem (index, info) {
@@ -94,7 +99,7 @@
       clkDybq (good) {
         let _this = this;
 
-        if (!parseInt(good.weight)) {
+        if (!parseFloat(good.weight)) {
           this.$tip({ show: true, text: '请先点击行，对商品进行称重', theme: 'warning' });
         } else {
           good.money = (good.rprice * good.weight).toFixed(2);
@@ -120,7 +125,7 @@
         let result = true;
 
         for (let i = 0;i < arr.length;i++) {
-          if (!parseInt(arr[i].weight)) {
+          if (!parseFloat(arr[i].weight)) {
             result = false;
             break;
           }
@@ -136,8 +141,8 @@
 
             m.push({
               PM: item.name, 
-              DJ: item.rprice, 
-              ZL: item.weight, 
+              DJ: item.rprice + '', 
+              ZL: item.weight + '', 
               JE: je.toFixed(2)
             });
             ssje += je;
@@ -167,6 +172,19 @@
         } else {
           this.$tip({ show: true, text: '还有商品未完成称重，请检查', theme: 'warning' });
         }
+      },
+      clkLogin () {
+        let _this = this;
+
+        ajaxGetCaptchaBya(1, () => {
+
+          ajaxLogin(this.login, res => {
+            _this.getDataList();
+          }, res => {
+            _this.$tip({ show: true, text: res.msg, theme: 'danger' });
+          });
+
+        });
       },
       // 退出
       clkBack () {
