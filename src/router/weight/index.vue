@@ -8,9 +8,11 @@
     </header>
     <section>
       <ul>
-        <li v-for="(item,index) in goods" :key="item" :style="{'height':liHeight+'px'}" :class="{'active':active===index}" @click="clkGoodItem(index)">
-          <img :src="item.avatar">
-          <p class="center-hv">{{item.name}}|{{item.specsInfo.name}}</p>
+        <li v-for="(item,index) in goods" :key="item" :style="{'height':(liHeight+30)+'px'}" :class="{'active':active===index}" @click="clkGoodItem(index)">
+          <div :style="'height:'+liHeight+'px;'">
+            <img :src="item.avatar">
+          </div>
+          <p>{{item.name}}|{{item.specsInfo.name}}</p>
         </li>
       </ul>
     </section>
@@ -95,6 +97,7 @@
             CZY: opName,
             SJ: dataFormat(new Date(), 'yyyy-MM-dd hh:mm')
           };
+          
           window.external.printLable('lable.report', '1', JSON.stringify(jsonData));
         }
         
@@ -201,9 +204,14 @@
         height: 120px;
         cursor: pointer;
 
-        > img {
-          width: 100%;
-          height: 100%;
+        > div {
+          width:100%;
+          background-color: #000;
+
+          > img {
+            width: 100%;
+            height: 100%;
+          }
         }
 
         > p {
@@ -212,7 +220,8 @@
           line-height: 30px;
           text-align: center;
           color: #fff;
-          background-color: rgba(0, 0, 0, 0.5);
+          // background-color: rgba(0, 0, 0, 0.5);
+          background-color: #000;
         }
       }
       li.active > p {
