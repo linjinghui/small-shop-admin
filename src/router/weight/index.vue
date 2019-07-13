@@ -110,9 +110,9 @@
           let _arr = [];
 
           for (let i = 0;i < arr.length;i++) {
-            let info = arr[i];
-            
-            info.specs.forEach(item => {
+            arr[i].specs.forEach(item => {
+              let info = JSON.parse(JSON.stringify(arr[i]));
+              
               info.specsInfo = item;
               _arr.push(info);
             });
