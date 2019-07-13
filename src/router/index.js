@@ -6,6 +6,7 @@ const Index = () => import('./index/index.vue');
 const Product = () => import('./product/index.vue');
 const Order = () => import('./order/index.vue');
 const Reservearea = () => import('./reservearea/index.vue');
+const Delivery = () => import('./delivery/index.vue');
 
 const Weight = () => import('./weight/index.vue');
 const OrderWeight = () => import('./weight/order_index.vue');
@@ -41,6 +42,12 @@ export default new Router({
           path: '/home/reservearea',
           name: 'reservearea',
           component: Reservearea,
+          children: []
+        },
+        {
+          path: '/home/delivery',
+          name: 'delivery',
+          component: Delivery,
           children: []
         }
         

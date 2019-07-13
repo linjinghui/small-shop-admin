@@ -12,7 +12,7 @@
     <aside>
       <div class="log"></div>
       <img src="https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=3300305952,1328708913&fm=27&gp=0.jpg">
-      <p class="name">张厚啊</p>
+      <p class="name">快鱼活鲜</p>
       <ul>
         <li v-for="(item,index) in nav.data" :key="'item-'+index" :class="{'active':nav.index===index}" @click="clkNav(index)">
           <i class="iconfont" :class="item.icon"></i>{{item.name}}
@@ -43,7 +43,7 @@
             {name: '产品库管理', icon: 'iconchanpinguanli1', urlType: 2},
             {name: '订单管理', icon: 'icondingdan', urlType: 3},
             {name: '备货区', icon: 'iconRectangleCopy', urlType: 4},
-            {name: '送货区', icon: 'iconsonghuo'}
+            {name: '送货区', icon: 'iconsonghuo', urlType: 5}
           ]
         }
       };

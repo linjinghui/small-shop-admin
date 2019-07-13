@@ -130,6 +130,10 @@
               // 备货区
               path = '/#/home/reservearea';
               break;
+            case 5:
+              // 送货区
+              path = '/#/home/delivery';
+              break;
             default:
               path = '/#/home';
           }
