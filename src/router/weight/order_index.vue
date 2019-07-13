@@ -121,6 +121,29 @@
       // 打印清单
       clkDyqd () {
         let _this = this;
+
+        this.$confirm({
+          show: true,
+          modal: true,
+          heading: '警告',
+          content: '打印清单后，订单状态将自动变更为待发货中',
+          type: 'warning',
+          stl: {
+            header: {'text-align': 'center'},
+            section: {'text-align': 'center'},
+            footer: {'text-align': 'center'}
+          },
+          buttons: [{text: '取消', theme: 'line'}, {text: '确定', theme: '#2b8aff'}],
+          callback: function (ret) {
+            _this.$confirm({ show: false });
+            if (ret.text === '确定') {
+              _this.dyqd();
+            }
+          }
+        });
+      },
+      dyqd () {
+        let _this = this;
         let arr = this.option.data;
         let result = true;
 
@@ -160,18 +183,16 @@
           };
 
 
-          console.log(JSON.stringify(jsonData));
-          let ptresult = window.external.printPOS('pos.report', '1', JSON.stringify(jsonData));
+          window.external.printPOS('pos.report', '1', JSON.stringify(jsonData));
 
           // 改变订单状态为待发货
-          if (ptresult) {
-            ajaxSetOrderWaitfordelivery([arr[0].order_id], ret => {
-              _this.active = '';
-              _this.option.data = [];
-              _this.consignees = [];
-              _this.getDataList();
-            });
-          }
+          ajaxSetOrderWaitfordelivery([arr[0].order_id], ret => {
+            _this.$tip({ show: true, text: '该订单已分拣完成，状态自动变更为待发货中', theme: 'success' });
+            _this.active = '';
+            _this.option.data = [];
+            _this.consignees = [];
+            _this.getDataList();
+          });
         } else if (!arr || arr.length === 0) {
           this.$tip({ show: true, text: '请先从左侧选择订单', theme: 'warning' });
         } else {
