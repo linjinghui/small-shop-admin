@@ -52,7 +52,7 @@
             <div class="wrap good" :class="{'turn':info.edit}">
               <i class="iconfont iconbianji1" @click.stop="clkEdit(info)"></i>
               <img :src="info.avatar">
-              <p>{{info.name}} x{{info.count}}<br>{{info.specs_name}}<br><span>￥{{info.rprice}}</span></p>
+              <p>{{info.name}} <span style="font-weight:bold;">x{{info.count}}</span><br>{{info.specs_name}}<br><span>￥{{info.rprice}}</span></p>
               <span>
                 <template v-if="info.money">{{info.money}}元</template>
                 <template v-if="info.weight">/{{info.weight}}斤</template>

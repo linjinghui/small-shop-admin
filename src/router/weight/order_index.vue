@@ -8,23 +8,26 @@
         <tr slot="head">
           <td>品名</td>
           <td>规格</td>
+          <td>数量</td>
           <td>单价</td>
           <td>重量(公斤)</td>
           <td>操作</td>
         </tr>
-        <tr slot="body" slot-scope="props" @click="clkLine(props.item)">
+        <tr slot="body" slot-scope="props">
           <td>{{props.item.name}}</td>
           <td>{{props.item.specs_name}}</td>
+          <td>{{props.item.count}}</td>
           <td>{{props.item.rprice}}</td>
-          <td><cmp-input clear="false" v-model="props.item.weight"></cmp-input></td>
+          <td><cmp-input class="numfont" clear="false" placeholder="00.000" rule="float" v-model="props.item.weight"></cmp-input></td>
           <td @click.stop>
+            <cmp-button @click="clkLine(props.item)">称重</cmp-button>
             <cmp-button theme="line" @click="clkDybq(props.item)">打印标签</cmp-button>
           </td>
         </tr>
       </cmp-table>
       <footer>
         <cmp-button @click="clkBack">退出</cmp-button>
-        <cmp-button>暂存</cmp-button>
+        <cmp-button @click="clkZc">暂存</cmp-button>
         <cmp-button @click="clkDyqd">打印清单</cmp-button>
       </footer>
     </div>
@@ -76,15 +79,20 @@
         this.active = index;
         let _this = this;
 
-        ajaxGetOrderInfo(info, function (data) {
-          _this.consignees = data.result.order_consignees;
-          let _data = data.result.order_product;
+        if (info.tableData) {
+          // 有暂存的数据
+          _this.$set(_this.option, 'data', info.tableData);
+        } else {
+          ajaxGetOrderInfo(info, function (data) {
+            _this.consignees = data.result.order_consignees;
+            let _data = data.result.order_product;
 
-          _data.forEach(item => {
-            item.weight = item.weight || '00.000';
+            // _data.forEach(item => {
+            //   item.weight = item.weight || '';
+            // });
+            _this.$set(_this.option, 'data', _data);
           });
-          _this.$set(_this.option, 'data', _data);
-        });
+        }
       },
       // 行点击 调出称重器
       clkLine (data) {
@@ -100,7 +108,7 @@
         let _this = this;
 
         if (!parseFloat(good.weight)) {
-          this.$tip({ show: true, text: '请先点击行，对商品进行称重', theme: 'warning' });
+          this.$tip({ show: true, text: '请先对商品进行称重', theme: 'warning' });
         } else {
           good.money = (good.rprice * good.weight).toFixed(2);
           let jsonData = {
@@ -118,31 +126,36 @@
           });
         }
       },
-      // 打印清单
-      clkDyqd () {
-        let _this = this;
-
-        this.$confirm({
-          show: true,
-          modal: true,
-          heading: '警告',
-          content: '打印清单后，订单状态将自动变更为待发货中',
-          type: 'warning',
-          stl: {
-            header: {'text-align': 'center'},
-            section: {'text-align': 'center'},
-            footer: {'text-align': 'center'}
-          },
-          buttons: [{text: '取消', theme: 'line'}, {text: '确定', theme: '#2b8aff'}],
-          callback: function (ret) {
-            _this.$confirm({ show: false });
-            if (ret.text === '确定') {
-              _this.dyqd();
-            }
-          }
-        });
+      // 暂存数据
+      clkZc () {
+        this.orderList[this.active].tableData = this.option.data;
+        this.$tip({ show: true, text: '该订单数据已暂存，暂存的数据将在退出当前页后清空~', theme: 'success' });
       },
-      dyqd () {
+      // 打印清单
+      clkDyqdxx () {
+        // let _this = this;
+
+        // this.$confirm({
+        //   show: true,
+        //   modal: true,
+        //   heading: '警告',
+        //   content: '打印清单后，订单状态将自动变更为待发货中',
+        //   type: 'warning',
+        //   stl: {
+        //     header: {'text-align': 'center'},
+        //     section: {'text-align': 'center'},
+        //     footer: {'text-align': 'center'}
+        //   },
+        //   buttons: [{text: '取消', theme: 'line'}, {text: '确定', theme: '#2b8aff'}],
+        //   callback: function (ret) {
+        //     _this.$confirm({ show: false });
+        //     if (ret.text === '确定') {
+              
+        //     }
+        //   }
+        // });
+      },
+      clkDyqd () {
         let _this = this;
         let arr = this.option.data;
         let result = true;
@@ -153,46 +166,68 @@
             break;
           }
         }
+
         if (arr.length > 0 && result) {
+
           // 商品都已经实称完成
-          // 打印清单
-          let m = [];
-          let ssje = 0;
+          this.$confirm({
+            show: true,
+            modal: true,
+            heading: '警告',
+            content: '打印清单后，订单状态将自动变更为待发货中',
+            type: 'warning',
+            stl: {
+              header: {'text-align': 'center'},
+              section: {'text-align': 'center'},
+              footer: {'text-align': 'center'}
+            },
+            buttons: [{text: '取消', theme: 'line'}, {text: '确定', theme: '#2b8aff'}],
+            callback: function (ret) {
+              _this.$confirm({ show: false });
+              if (ret.text === '确定') {
 
-          arr.forEach(item => {
-            let je = item.rprice * item.weight;
+                // 打印清单
+                let m = [];
+                let ssje = 0;
 
-            m.push({
-              PM: item.name, 
-              DJ: item.rprice + '', 
-              ZL: item.weight + '', 
-              JE: je.toFixed(2)
-            });
-            ssje += je;
+                arr.forEach(item => {
+                  let je = item.rprice * item.weight;
+
+                  m.push({
+                    PM: item.name, 
+                    DJ: item.rprice + '', 
+                    ZL: item.weight + '', 
+                    JE: je.toFixed(2)
+                  });
+                  ssje += je;
+                });
+
+                let jsonData = {
+                  DDH: arr[0].order_id,
+                  CKC: '1号',
+                  CZY: '快鱼活鲜',
+                  CKRQ: dataFormat(new Date(), 'yyyy-MM-dd hh:mm'),
+                  XDR: _this.consignees.name,
+                  SJH: _this.consignees.mobile,
+                  SSJE: ssje.toFixed(2),
+                  M: m
+                };
+
+                window.external.printPOS('pos.report', '1', JSON.stringify(jsonData));
+
+                // 改变订单状态为待发货
+                ajaxSetOrderWaitfordelivery([arr[0].order_id], ret => {
+                  _this.$tip({ show: true, text: '该订单已分拣完成，状态自动变更为待发货中', theme: 'success' });
+                  _this.active = '';
+                  _this.option.data = [];
+                  _this.consignees = [];
+                  _this.getDataList();
+                });
+
+              }
+            }
           });
 
-          let jsonData = {
-            DDH: arr[0].order_id,
-            CKC: '1号',
-            CZY: '快鱼活鲜',
-            CKRQ: dataFormat(new Date(), 'yyyy-MM-dd hh:mm'),
-            XDR: this.consignees.name,
-            SJH: this.consignees.mobile,
-            SSJE: ssje.toFixed(2),
-            M: m
-          };
-
-
-          window.external.printPOS('pos.report', '1', JSON.stringify(jsonData));
-
-          // 改变订单状态为待发货
-          ajaxSetOrderWaitfordelivery([arr[0].order_id], ret => {
-            _this.$tip({ show: true, text: '该订单已分拣完成，状态自动变更为待发货中', theme: 'success' });
-            _this.active = '';
-            _this.option.data = [];
-            _this.consignees = [];
-            _this.getDataList();
-          });
         } else if (!arr || arr.length === 0) {
           this.$tip({ show: true, text: '请先从左侧选择订单', theme: 'warning' });
         } else {
@@ -231,6 +266,7 @@
   .order-weight {
     .wrap-table td {
       height: 50px;
+      font-size: 14px;
     }
     input {
       // line-height: 40px;
@@ -278,7 +314,7 @@
         height: calc(100% - 100px);
         
         .input {
-          width: 120px;
+          width: 140px;
           font-size: 20px;
         }
       }

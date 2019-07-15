@@ -1,9 +1,9 @@
 <template>
   <div class="page weight">
     <header>
-      <div><p><span>皮重</span><span>公斤</span><span>kg</span></p><cmp-input clear="false" v-model="weight_pz"></cmp-input></div>
-      <div><p><span>重量</span><span>公斤</span><span>kg</span></p><cmp-input clear="false" v-model="weight"></cmp-input></div>
-      <div><p><span>定量</span><span>公斤</span><span>kg</span></p><cmp-input clear="false" v-model="weight_dl" @focus="weight='00.000'"></cmp-input></div>
+      <div><p><span>皮重</span><span>公斤</span><span>kg</span></p><cmp-input class="numfont" placeholder="00.000" clear="false" rule="float" v-model="weight_pz"></cmp-input></div>
+      <div><p><span>重量</span><span>公斤</span><span>kg</span></p><cmp-input class="numfont" placeholder="00.000" clear="false" rule="float" v-model="weight"></cmp-input></div>
+      <div><p><span>定量</span><span>公斤</span><span>kg</span></p><cmp-input class="numfont" placeholder="00.000" clear="false" rule="float" v-model="weight_dl"></cmp-input></div>
       <cmp-button @click="clkDybq">标签<br>打印</cmp-button>
     </header>
     <section>
@@ -39,9 +39,9 @@
           vcode: 'loginweight'
         },
         active: '',
-        weight_pz: '00.000',
-        weight: '00.000',
-        weight_dl: '00.000',
+        weight_pz: '',
+        weight: '',
+        weight_dl: '',
         goods: []
       };
     },
@@ -52,14 +52,10 @@
     },
     watch: {
       weight (val) {
-        if (isNaN(val)) {
-          this.weight = '00.000';
-        }
+        this.weight_dl = '';
       },
       weight_dl (val) {
-        if (isNaN(val)) {
-          this.weight_dl = '00.000';
-        }
+        this.weight = '';
       }
     },
     beforeDestroy () {
@@ -83,9 +79,10 @@
         let weight = parseFloat(this.weight);
         let weightDl = parseFloat(this.weight_dl);
         
+        console.log(isNaN(this.weight), isNaN(this.weight_dl));
         if (this.active === '') {
           this.$tip({ show: true, text: '请选择需要称重的产品', theme: 'warning' });
-        } else if (weight === 0 && weightDl === 0) {
+        } else if (!this.weight && !this.weight_dl) {
           this.$tip({ show: true, text: '请把实物放入称重, 或者使用定量称重', theme: 'warning' });
         } else {
           let opName = '快鱼活鲜';
