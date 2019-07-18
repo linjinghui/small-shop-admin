@@ -8,9 +8,9 @@ export default new Vuex.Store({
 		// 系统配置
 		config: {
 			// 产品banner长度
-			lenBanner: 3,
+			lenBanner: 6,
 			// 产品详情图片长度
-			lenDetailImg: 6,
+			lenDetailImg: 15,
 			// 图片大小 500 kb
 			imgSize: 1024 * 500
 		},
