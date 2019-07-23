@@ -2,8 +2,8 @@
   <div class="page weight">
     <header>
       <div><p><span>皮重</span><span>公斤</span><span>kg</span></p><cmp-input class="numfont" placeholder="00.000" clear="false" rule="float" v-model="weight_pz"></cmp-input></div>
-      <div><p><span>重量</span><span>公斤</span><span>kg</span></p><cmp-input class="numfont" placeholder="00.000" clear="false" rule="float" v-model="weight"></cmp-input></div>
-      <div><p><span>定量</span><span>公斤</span><span>kg</span></p><cmp-input class="numfont" placeholder="00.000" clear="false" rule="float" v-model="weight_dl"></cmp-input></div>
+      <div><p><span>重量</span><span>公斤</span><span>kg</span></p><cmp-input class="numfont" placeholder="00.000" clear="false" rule="float" @focus="focusWeight" v-model="weight"></cmp-input></div>
+      <div><p><span>定量</span><span>公斤</span><span>kg</span></p><cmp-input class="numfont" placeholder="00.000" clear="false" rule="float" @focus="focusWeightDl" v-model="weight_dl"></cmp-input></div>
       <cmp-button @click="clkDybq">标签<br>打印</cmp-button>
     </header>
     <section>
@@ -50,14 +50,6 @@
         return document.body.clientWidth / 7;
       }
     },
-    watch: {
-      weight (val) {
-        this.weight_dl = '';
-      },
-      weight_dl (val) {
-        this.weight = '';
-      }
-    },
     beforeDestroy () {
       // 
     },
@@ -65,6 +57,12 @@
       this.clkLogin();
     },
     methods: {
+      focusWeight () {
+        this.weight_dl = '';
+      },
+      focusWeightDl () {
+        this.weight = '';
+      },
       // 点击产品调出称重器
       clkGoodItem (index) {
         this.active = index;
@@ -73,6 +71,7 @@
         if (weight) {
           weight = JSON.parse(weight);
           this.weight = weight[1].weight;
+          this.weight_dl = '';
         }
       },
       clkDybq () {

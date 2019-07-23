@@ -85,7 +85,7 @@
           pagesizes: [
             30, 50, 100
           ],
-          pagesize: 10,
+          pagesize: 30,
           totalSize: ''
         }
       };

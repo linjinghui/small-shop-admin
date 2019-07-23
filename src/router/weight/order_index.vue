@@ -26,6 +26,7 @@
         </tr>
       </cmp-table>
       <footer>
+        <cmp-button theme="info" @click="clkFresh">刷新</cmp-button>
         <cmp-button @click="clkBack">退出</cmp-button>
         <cmp-button @click="clkZc">暂存</cmp-button>
         <cmp-button @click="clkDyqd">打印清单</cmp-button>
@@ -246,6 +247,12 @@
           });
 
         });
+      },
+      clkFresh () {
+        this.active = '';
+        this.option.data = [];
+        this.consignees = [];
+        this.getDataList();
       },
       // 退出
       clkBack () {
