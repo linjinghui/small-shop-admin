@@ -58,7 +58,19 @@
     },
     methods: {
       focusWeight () {
-        this.weight_dl = '';
+        if (this.active === '') {
+          this.$tip({ show: true, text: '请选择需要称重的产品', theme: 'warning' });
+        } else {
+          this.weight_dl = '';
+          // 调用称重器
+          let weight = window.external.getWeight('R0001').toString();
+
+          if (weight) {
+            weight = JSON.parse(weight);
+            this.weight = weight[1].weight;
+            this.weight_dl = '';
+          }
+        }
       },
       focusWeightDl () {
         this.weight = '';
@@ -66,13 +78,13 @@
       // 点击产品调出称重器
       clkGoodItem (index) {
         this.active = index;
-        let weight = window.external.getWeight('R0001').toString();
+        // let weight = window.external.getWeight('R0001').toString();
 
-        if (weight) {
-          weight = JSON.parse(weight);
-          this.weight = weight[1].weight;
-          this.weight_dl = '';
-        }
+        // if (weight) {
+        //   weight = JSON.parse(weight);
+        //   this.weight = weight[1].weight;
+        //   this.weight_dl = '';
+        // }
       },
       clkDybq () {
         let weight = parseFloat(this.weight);
