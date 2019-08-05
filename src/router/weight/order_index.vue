@@ -1,7 +1,11 @@
 <template>
   <div class="page order-weight">
     <aside>
-      <p v-for="(item,index) in orderList" :key="'item_'+index" :class="{'active':active===index}" @click="clkOrderItem(index,item)">订单 - {{item._id}}</p>
+      <p v-for="(item,index) in orderList" :key="'item_'+index" :class="{'active':active===index}" @click="clkOrderItem(index,item)">
+        {{item._id}}<br>
+        {{item.order_consignees[0].name}} - {{item.order_consignees[0].mobile}}<br>
+        {{item.order_consignees[0].address}} {{item.order_consignees[0].door_address}}
+      </p>
     </aside>
     <div>
       <cmp-table v-bind="option">
@@ -263,6 +267,7 @@
 
         ajaxGetOrders({status: 4, page: 1, size: 1000}, function (data) {
           _this.orderList = data.result.list;
+          console.log(_this.orderList);
         });
       }
     }
@@ -296,11 +301,12 @@
       overflow-y: auto;
       background-color: #fbfbfb;
       user-select: none;
+      font-size: 14px;
 
       > p {
-        padding: 0 10px;
-        height: 40px;
-        line-height: 40px;
+        padding: 4px 10px;
+        // height: 40px;
+        // line-height: 40px;
         border-bottom: solid 1px #f4f6f8;
         cursor: pointer;
       }
