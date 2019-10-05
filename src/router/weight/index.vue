@@ -8,7 +8,7 @@
     </header>
     <section>
       <ul>
-        <li v-for="(item,index) in goods" :key="item" :style="{'height':(liHeight+30)+'px'}" :class="{'active':active===index}" @click="clkGoodItem(index)">
+        <li v-for="(item,index) in goods" :key="item" :style="{'height':(liHeight+44)+'px'}" :class="{'active':active===index}" @click="clkGoodItem(index)">
           <div :style="'height:'+liHeight+'px;'">
             <img :src="item.avatar">
           </div>
@@ -224,8 +224,8 @@
 
         > p {
           top: unset;
-          height: 30px;
-          line-height: 30px;
+          height: 44px;
+          // line-height: 30px;
           text-align: center;
           color: #fff;
           // background-color: rgba(0, 0, 0, 0.5);
