@@ -31,7 +31,7 @@
         <div class="form-layer gug">
           <label class="star">规格: <i class="cicon-plus-crle-cpt-chr plus" @click="clkAddGg"></i></label>
           <span class="f-dom" v-for="(info,index) in dataInfo.specs" :key="'cpgg-'+index">
-            <cmp-input class="f-dom" clear="false" maxlength="15" placeholder="规格名称" v-model="info.name"></cmp-input>
+            <cmp-input class="f-dom" clear="false" maxlength="25" placeholder="规格名称" v-model="info.name"></cmp-input>
             <cmp-input class="f-dom" clear="false" maxlength="10" rule="float" placeholder="单价，如：10.5" v-model="info.price"></cmp-input>
             <cmp-input class="f-dom" clear="false" maxlength="5" rule="number" placeholder="库存" v-model="info.stock"></cmp-input>
             <i class="cicon-sub-crle-cpt-chr sub" @click="clkDelGg(index)"></i>
