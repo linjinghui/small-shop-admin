@@ -36,7 +36,7 @@
           <td>{{props.item.arriveTime}}</td>
           <td>{{props.item.remark || '-'}}</td>
           <td @click.stop>
-            <cmp-button v-if="props.item.status===1" @click="clkQr(props.item)">确认订单</cmp-button>
+            <cmp-button style="margin-right:10px;" v-if="props.item.status===1" @click="clkQr(props.item)">确认订单</cmp-button>
             <cmp-button theme="danger" @click="clkDel(props.item)">删除订单</cmp-button>
           </td>
         </tr>
@@ -215,13 +215,31 @@
           _this.$set(data, 'status', 2);
         }); 
       },
-      clkDel (data) {
+      clkDel (orderInfo) {
         let _this = this;
 
-        ajaxDelOrderInfo(data, function (ret) {
-          _this.$tip({ show: true, text: '订单删除成功', theme: 'success' });
-          _this.getDataList();
-        }); 
+        this.$confirm({
+          show: true,
+          modal: true,
+          heading: '提示',
+          content: ' 确定删除该订单？',
+          type: 'warning',
+          stl: {
+            header: {'text-align': 'center'},
+            section: {'text-align': 'center'},
+            footer: {'text-align': 'center'}
+          },
+          buttons: [{text: '取消', theme: 'line'}, {text: '确定', theme: '#2b8aff'}],
+          callback: function (data) {
+            _this.$confirm({ show: false });
+            if (data.text === '确定') {
+              ajaxDelOrderInfo(orderInfo, function (ret) {
+                _this.$tip({ show: true, text: '订单删除成功', theme: 'success' });
+                _this.getDataList();
+              }); 
+            }
+          }
+        });
       },
       getDataList () {
         let _this = this;
