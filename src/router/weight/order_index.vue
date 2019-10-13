@@ -29,6 +29,9 @@
           </td>
         </tr>
       </cmp-table>
+      <div class="wrap-mark">
+        备注：{{orderInfo.remark}}
+      </div>
       <footer>
         <cmp-button theme="info" @click="clkFresh">刷新</cmp-button>
         <cmp-button @click="clkBack">退出</cmp-button>
@@ -64,7 +67,8 @@
         consignees: {},
         option: {
           data: []
-        }
+        },
+        orderInfo: {}
       };
     },
     computed: {
@@ -84,11 +88,13 @@
         this.active = index;
         let _this = this;
 
+        _this.orderInfo = {};
         if (info.tableData) {
           // 有暂存的数据
           _this.$set(_this.option, 'data', info.tableData);
         } else {
           ajaxGetOrderInfo(info, function (data) {
+            _this.orderInfo = data.result;
             _this.consignees = data.result.order_consignees;
             let _data = data.result.order_product;
 
@@ -324,13 +330,21 @@
       height: 100%;
       
       > .wrap-table {
-        height: calc(100% - 100px);
+        height: calc(100% - 60px - 100px);
         
         .input {
           width: 140px;
           font-size: 20px;
         }
       }
+
+      > .wrap-mark {
+        padding-left: 5px;
+        padding-top: 5px;
+        height: 60px;
+        background-color: #f5f5f5;
+      }
+
       > footer {
         display: flex;
         flex-shrink: 0;
