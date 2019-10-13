@@ -37,7 +37,7 @@
           <td>{{props.item.remark || '-'}}</td>
           <td @click.stop>
             <cmp-button v-if="props.item.status===1" @click="clkQr(props.item)">确认订单</cmp-button>
-            <span v-else>-</span>
+            <cmp-button theme="danger" @click="clkDel(props.item)">删除订单</cmp-button>
           </td>
         </tr>
       </cmp-table>
@@ -93,7 +93,7 @@
 <script>
   import {Table, Button, Pagebarpagesize, Dropmenu, Laydate, Input} from 'web-base-ui';
   import {dataFormat} from 'web-js-tool';
-  import {ajaxGetOrders, ajaxGetOrderInfo, ajaxUpdateOrderSpecs, ajaxConfirmOrder} from '~root/data/ajax.js';
+  import {ajaxGetOrders, ajaxGetOrderInfo, ajaxUpdateOrderSpecs, ajaxConfirmOrder, ajaxDelOrderInfo} from '~root/data/ajax.js';
   import QRCode from 'qrcode';
   
   export default {
@@ -213,6 +213,14 @@
           _this.$tip({ show: true, text: '订单确认成功', theme: 'success' });
           // 已确认，待备货状态
           _this.$set(data, 'status', 2);
+        }); 
+      },
+      clkDel (data) {
+        let _this = this;
+
+        ajaxDelOrderInfo(data, function (ret) {
+          _this.$tip({ show: true, text: '订单删除成功', theme: 'success' });
+          _this.getDataList();
         }); 
       },
       getDataList () {

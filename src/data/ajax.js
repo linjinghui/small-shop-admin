@@ -509,6 +509,32 @@ export function ajaxGetOrderInfo (pms, callback, fail) {
 }
 
 /**
+ * 删除订单
+ * @param {string} pms.id - 订单号
+ * @param {function} callback - 回调函数 
+ */
+export function ajaxDelOrderInfo (pms, callback, fail) {
+  let params = {
+    _id: pms._id || ''
+  };
+  
+  $http({
+    method: 'POST',
+    url: URL + '/admin/order/delete',
+    body: params,
+    emulateJSON: true
+  }).then(function (successData) {
+    if (successData.body.code === 200) {
+      callback && callback(successData.body);
+    } else if (fail) {
+      fail(successData.body);
+    } else {
+      $tip({ show: true, text: successData.body.msg, theme: 'danger' });
+    }
+  });
+}
+
+/**
  * 更新订单商品价格
  * @param {function} callback - 回调函数 
  */
