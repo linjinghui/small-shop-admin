@@ -28,7 +28,7 @@
         </tr>
         <tr slot="body" slot-scope="props" :class="{'active':option.activeId===props.item._id}" @click="clkItem(props.item)">
           <td>{{props.item._id}}</td>
-          <td>{{props.item.money}}</td>
+          <td>{{parseFloat(props.item.money.toFixed(2))}}</td>
           <td>{{props.item.count}}</td>
           <!-- // 订单状态 0: 已删除, 1：待确认，2：待备货，3：备货中，4：待分拣，5：待配送，6：配送中，7：已完成 -->
           <td>{{props.item.status===0?'已删除':props.item.status===1?'待确认':props.item.status===2?'待备货':props.item.status===3?'备货中':props.item.status===4?'待分拣':props.item.status===5?'待配送':props.item.status===6?'配送中':'已完成'}}</td>
