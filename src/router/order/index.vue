@@ -64,7 +64,7 @@
               <i class="cicon-tick iconfont" @click.stop="clkConfirm(info)"></i>
               <div class="form-layer">
                 <label class="star">实称重量(斤):</label>
-                <cmp-input class="f-dom" maxlength="5" rule="number" placeholder="请输入实称重量" v-model="info._weight" @keyup="changeWeight(info)"></cmp-input>
+                <cmp-input class="f-dom" maxlength="10" rule="float" placeholder="请输入实称重量" v-model="info._weight" @keyup="changeWeight(info)"></cmp-input>
               </div>
               <div class="form-layer">
                 <label class="star">实称价格:</label>
