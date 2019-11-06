@@ -366,6 +366,7 @@
       margin-top: 10px;
       width: calc(100% - 400px - 10px);
       height: 300px;
+      overflow: auto;
 
       > ul {
         display: flex;
