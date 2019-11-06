@@ -81,7 +81,7 @@
       <template v-else>
         <p><label>收货人：</label><span>{{orderInfo.order_consignees.name}}</span></p>
         <p><label>联系电话：</label><span>{{orderInfo.order_consignees.mobile}}</span></p>
-        <p><label>配送地址：</label><span>{{orderInfo.order_consignees.address}} {{orderInfo.order_consignees.doorAddress}}</span></p>
+        <p><label>配送地址：</label><span>{{orderInfo.order_consignees.address}} {{orderInfo.order_consignees.door_address}}</span></p>
         <p><label>备注：</label><span>{{orderInfo.remark}}</span></p>
         <img class="qrcode" v-if="orderInfo.qrcodeUrl" :src="orderInfo.qrcodeUrl">
       </template>
